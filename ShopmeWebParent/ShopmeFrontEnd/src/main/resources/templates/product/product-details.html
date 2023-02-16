@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${product.name}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+    <style>
+        #bigImg {
+            height: 300px;
+        }
+        .thumbnail {
+            height: 50px;
+        }
+        .img-carousel {
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments ::header_menu()"></div>
+        <div th:replace="fragments ::secondary_menu()"></div>
+
+        <div class="mb-5">
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/}">Home</a>
+                    </li>
+                    <th:block th:each="parent : ${categoryParents}">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{'/c/' + ${parent.alias}}">[[${parent.name}]]</a>
+                        </li>
+                    </th:block>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{'/c/' + ${category.alias}}">[[${category.name}]]</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{'/p/' + ${product.alias}}">[[${product.getShorterName}]]</a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="row mb-5">
+            <!--   Column 1: Main and extra images      -->
+            <div class="col-sm">
+                <div class="row justify-content-center mb-3">
+                    <img id="bigImg" class="img-fluid" th:src="@{${product.getMainImagePath}}">
+                </div>
+                <div class="row justify-content-center">
+                    <div class="border border-secondary rounded p-2 mr-1">
+                        <img class="thumbnail" th:src="@{${product.getMainImagePath}}" index="0">
+                    </div>
+                    <th:block th:each="extraImg, status : ${product.images}">
+                        <div class="border border-secondary rounded p-2 mr-1">
+                            <img class="thumbnail" th:src="@{${extraImg.getImagePath}}" th:index="${status.count}">
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+
+            <!--   Column 2: Name, short description      -->
+            <div class="col-sm">
+                <div>
+                    <h2>[[${product.name}]]</h2>
+                </div>
+                <div>
+                    <div th:if="${product.discountPercent == 0}">
+                        <label>Price:</label>
+                        <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                        <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+                    </div>
+                    <div th:if="${product.discountPercent > 0}">
+                        <label>Price:</label>
+                        <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}"
+                              style="font-size: larger; color: darkred">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                        <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}"
+                              style="font-size: larger; color: darkred">[[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+
+                        <del th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</del>
+                        <del th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</del>
+
+                        <span>(sale off [[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]%)</span>
+                    </div>
+                </div>
+                <div th:utext="${product.shortDescription}"></div>
+            </div>
+
+            <!--   Column 3: Quantity, add button      -->
+            <div class="col-sm-2">
+                <div th:if="${product.inStock}">
+                    <span class="font-weight-bold text-success mb-1">In Stock</span>
+                    <div class="mb-3">
+                        <div th:replace="/cart/fragment-quantity-control :: content(1, ${product.id})"></div>
+                    </div>
+                    <div>
+                        <input class="btn btn-primary" type="button" value="Add to Cart">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <hr>
+            <h3>Product Description</h3>
+            <div th:utext="${product.fullDescription}"></div>
+        </div>
+
+        <div>
+            <hr>
+            <h3>Product Details</h3>
+            <th:block th:each="detail : ${product.details}">
+                <span class="font-weight-bold">- [[${detail.name}]]:</span>
+                <span>[[${detail.value}]]</span>
+                <br>
+            </th:block>
+        </div>
+
+        <div th:replace="fragments ::footer_menu()"></div>
+    </div>
+
+    <div th:replace="/product/image-carousel :: content()"></div>
+
+    <script th:src="@{/js/cart/quantity-control.js}"></script>
+    <script type="text/javascript">
+        let bigImg = $("#bigImg");
+
+        $(document).ready(function() {
+           $(".thumbnail").mouseover(function() {
+              let clickedImgSrc = $(this).attr("src");
+              let clickedImgIndex = $(this).attr("index");
+
+              bigImg.attr("src", clickedImgSrc);
+              bigImg.attr("index", clickedImgIndex);
+           });
+
+           bigImg.on("click", function() {
+              $("#carouselDialog").modal();
+              let clickedImgIndex = bigImg.attr("index");
+              $("#carouselExampleIndicators").carousel(parseInt(clickedImgIndex));
+           });
+        });
+    </script>
+</body>
+</html>

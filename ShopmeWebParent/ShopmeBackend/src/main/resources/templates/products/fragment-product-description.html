@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <div class="my-3">
+            <label class="font-weight-bold">Short Description:</label>
+            <textarea class="form-control shortDescription" th:field="*{shortDescription}" rows="5"></textarea>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('shortDescription')}" th:errors="*{shortDescription}"></div>
+        </div>
+
+        <div>
+            <label class="font-weight-bold">Full Description:</label>
+            <textarea class="form-control fullDescription" th:field="*{fullDescription}" rows="10"></textarea>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('fullDescription')}" th:errors="*{fullDescription}"></div>
+        </div>
+    </div>
+</body>
+</html>

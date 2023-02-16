@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>Product Management</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+    <style>
+        #mainImage {
+            width: 150px;
+            height: auto;
+            border-radius: 7px;
+        }
+
+        .extra-thumbnail,
+        #thumbnail {
+            height: 120px;
+            width: auto;
+        }
+
+        #mainImageDiv,
+        .extraImage {
+            display: inline-block;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div class="mb-2">
+            <h2>Product Management</h2>
+            <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                <a class="mr-2 btn btn-primary" th:href="@{/products/new}">Create New Product</a>
+                <a class="mr-2 btn btn-secondary" th:href="@{/products/export/csv}">Export to CSV</a>
+            </th:block>
+        </div>
+
+        <!--    SEARCH FORM    -->
+        <div class="mb-2">
+            <form th:id="searchByCategoryForm" class="form-inline" th:action="@{'/products/page/1'}">
+                <input type="hidden" name="sortField" th:value="${sortField}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                <input class="form-control mr-1" type="search" name="keyword" th:value="${keyword}" placeholder="Search product...">
+
+                <button class="btn btn-primary mr-1" type="submit">Search</button>
+                <button class="btn btn-secondary btn-clear" type="button">Clear</button>
+
+                <select id="categorySelector" class="form-control ml-1" name="allParentIds">
+                    <option value="-" th:selected="${allParentIds == '-'}">All Category</option>
+                    <th:block th:each="category : ${categories}">
+                        <option th:value="${category.allParentIds}" th:selected="${allParentIds == category.allParentIds}">[[${category.name}]]</option>
+                    </th:block>
+                </select>
+            </form>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${message}">
+            [[${message}]]
+        </div>
+
+        <!--    PRODUCT TABLE    -->
+        <div>
+            <table class="table table-responsive-xl table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'id'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=id&sortDir=asc&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">ID</a>
+                            <a class="text-white" th:if="${sortField == 'id'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">ID</a>
+                            <span th:if="${sortField == 'id'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>Main Image</th>
+                        <th width="50%">
+                            <a class="text-white" th:if="${sortField != 'name'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=name&sortDir=asc&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Name</a>
+                            <a class="text-white" th:if="${sortField == 'name'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Name</a>
+                            <span th:if="${sortField == 'name'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'brand'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=brand&sortDir=asc&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Brand</a>
+                            <a class="text-white" th:if="${sortField == 'brand'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=brand&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Brand</a>
+                            <span th:if="${sortField == 'brand'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'category'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=category&sortDir=asc&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Category</a>
+                            <a class="text-white" th:if="${sortField == 'category'}" th:href="@{'/products/page/' + ${currentPage} + '?sortField=category&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Category</a>
+                            <span th:if="${sortField == 'category'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th sec:authorize="hasAnyAuthority('Admin', 'Editor')">Enabled</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="product : ${products}">
+                        <tr>
+                            <td>[[${product.id}]]</td>
+                            <td>
+                                <img id="mainImage" class="img-fluid" th:src="@{${product.getMainImagePath}}">
+                            </td>
+                            <td>
+                                <a class="link-details"
+                                   th:href="@{'/products/details/' + ${product.id}}"
+                                   th:title="${product.name}">[[${product.getShorterName}]]</a>
+                            </td>
+                            <td>[[${product.brand.name}]]</td>
+                            <td th:text="${#strings.replace(product.category.name, '-', '')}"></td>
+                            <td sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                                <a class="fas fa-check-circle fa-2x icon-green" th:if="${product.enabled}"
+                                   th:href="@{'/products/update-status/' + ${product.id}}"></a>
+                                <a class="fas fa-circle fa-2x icon-dark" th:if="${!product.enabled}"
+                                   th:href="@{'/products/update-status/' + ${product.id}}"></a>
+                            </td>
+                            <td>
+                                <a class="fas fa-file-alt fa-2x icon-green link-details"
+                                   th:href="@{'/products/details/' + ${product.id}}"></a>
+                                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')">
+                                &nbsp;
+                                <a class="fas fa-edit fa-2x icon-green"
+                                   th:href="@{'/products/edit/' + ${product.id}}"></a>
+                                </th:block>
+                                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                                &nbsp;
+                                <a class="fas fa-trash fa-2x icon-dark link-delete"
+                                   th:href="@{'/products/delete/' + ${product.id}}" th:productId="${product.id}"></a>
+                                </th:block>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!--    PAGINATION    -->
+        <div class="text-center" th:if="${totalElements > 0}">
+            <p class="font-weight-bold">Showing product #[[${startCount}]] to #[[${endCount}]] of total [[${totalElements}]]
+                <span th:if="${keyword == ''}">products</span>
+                <span th:if="${keyword != ''}">search results</span>
+            </p>
+        </div>
+
+        <div class="text-center" th:if="${totalElements == 0}">
+            <h3 class="font-weight-bold font-italic">No Product Found!</h3>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/products/page/1?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">First</a>
+                    </li>
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/products/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Previous</a>
+                    </li>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+                            <a class="page-link" th:href="@{'/products/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/products/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Next</a>
+                    </li>
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/products/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword} + '&allParentIds=' + ${allParentIds}}">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!--    PRODUCT DETAILS DIALOG    -->
+        <div class="modal fade" id="productDetailsDialog">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <!--    CONFIRMATION DIALOG    -->
+    <div th:replace="fragments :: confirmationWindow()"></div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".link-delete").on("click", function(e) {
+                e.preventDefault();
+
+                let clickDeleteBtn = $(this);
+                let link = clickDeleteBtn.attr("href");
+                let productId = clickDeleteBtn.attr("productId");
+
+                $("#modalContent").text("Are you sure to delete product ID " + productId);
+                $("#btnYes").attr("href", link);
+                $("#confirmDialog").modal();
+            });
+
+            $(".link-details").on("click", function(e) {
+                e.preventDefault();
+
+                let linkAttr = $(this).attr("href");
+                $("#productDetailsDialog").modal("show").find(".modal-content").load(linkAttr);
+            });
+
+            $(".btn-clear").on("click", function() {
+                window.location = "[[@{/products}]]";
+            });
+
+            $("#categorySelector").on("change", function() {
+                let selectedCategoryName = this.value;
+                let searchCategoryForm = $("#searchByCategoryForm");
+
+                searchCategoryForm.submit();
+            });
+        });
+    </script>
+</body>
+</html>

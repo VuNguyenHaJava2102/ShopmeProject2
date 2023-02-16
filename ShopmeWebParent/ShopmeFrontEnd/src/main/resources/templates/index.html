@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${SITE_NAME}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+    <style>
+        .category-img {
+            height: 120px;
+            width: 120px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments ::header_menu()"></div>
+        <div th:replace="fragments ::secondary_menu()"></div>
+
+        <div>
+            <h1 class="my-2">Shopping by Category</h1>
+
+            <div class="row">
+                <th:block th:each="category : ${categories}">
+                    <div class="col">
+                        <div>
+                            <img class="category-img" th:src="@{${category.getImagePath}}">
+                        </div>
+                        <div>
+                            <a class="text-dark" th:href="@{'/c/' + ${category.alias}}">[[${category.name}]]</a>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+        <div th:replace="fragments ::footer_menu()"></div>
+    </div>
+</body>
+</html>

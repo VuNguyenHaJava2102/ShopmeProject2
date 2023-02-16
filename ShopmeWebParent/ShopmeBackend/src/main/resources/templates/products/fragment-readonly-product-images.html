@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <div th:fragment="content()" th:remove="tag">
+        <div id="mainImageDiv" class="border border-secondary rounded p-3">
+            <div>
+                <label class="font-weight-bold">Main image:</label>
+            </div>
+            <div class="my-3">
+                <img id="thumbnail" class="img-fluid" th:src="@{${product.getMainImagePath}}">
+            </div>
+        </div>
+
+        <br>
+
+        <!--    Iterate extra images    -->
+        <th:block th:each="extraImage, status : ${product.images}">
+            <div class="border border-secondary rounded p-3 extraImage">
+                <div class="extraImageHeader">
+                    <label class="font-weight-bold">Extra image #[[${status.count}]]:</label>
+                </div>
+                <div class="my-3">
+                    <img class="img-fluid extra-thumbnail" th:src="@{${'/u/product-images/' + product.id + '/extras/' + extraImage.name}}">
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+</body>
+</html>

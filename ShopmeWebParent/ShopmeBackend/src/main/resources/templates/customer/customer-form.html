@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${pageTitle}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+    <style>
+        .registration-div {
+            width: 700px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div>
+            <h1 class="my-2">[[${pageTitle}]]</h1>
+
+            <div class="registration-div border border-secondary p-3 rounded">
+                <form th:action="@{/customers/save}" th:object="${customer}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">First name:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{firstName}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Last name:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{lastName}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">E-mail:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{email}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            <div th:id="emailStatus" class="alert alert-warning" hidden="hidden">E-mail already exists!</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Password:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{password}">
+                            <div class="font-italic">(Customer's password has been encoded)</div>
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Phone number:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{phoneNumber}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Address Line 1:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{addressLine1}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('addressLine1')}" th:errors="*{addressLine1}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Address Line 2:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{addressLine2}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('addressLine2')}" th:errors="*{addressLine2}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">City:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{city}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Country:</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" th:field="*{country}">
+                                <th:block th:each="country : ${countries}">
+                                    <option th:value="${country.id}">[[${country.name}]]</option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">State/Province:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{state}" list="stateList">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></div>
+                            <datalist th:id="stateList"></datalist>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Postal Code:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{postalCode}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <input th:id="btnSubmit" class="btn btn-primary" type="submit" value="Create Account" disabled="disabled">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <script type="text/javascript">
+        let contextPath = "[[@{/}]]";
+        let selectorCountry;
+        let dataListState;
+        let emailInput;
+        let btnSubmit;
+
+        $(document).ready(function() {
+            selectorCountry = $("#country");
+            dataListState = $("#stateList");
+            emailInput = $("#email");
+            btnSubmit = $("#btnSubmit");
+            btnSubmit.prop("disabled", false);
+
+            // 1
+            selectorCountry.on("change", function() {
+                $("#state").val("").focus();
+                let selectedCountryOption = $("#country option:selected");
+                let selectedCountryId = selectedCountryOption.attr("value");
+                let url = contextPath + "states/get-all/" + selectedCountryId;
+
+                $.get(url, function(responseJson) {
+
+                    dataListState.empty();
+                    $.each(responseJson, function(index, state) {
+                        dataListState.append(`<option value="${state.name}"></option>`);
+                   });
+               });
+            });
+
+            // 2
+            emailInput.on("change", function() {
+                checkEmail();
+            });
+        });
+
+        // Functions
+        // 1
+        let checkEmail = () => {
+            let url = contextPath + "customers/check-email"
+            let idValue = $("#id").val();
+            let emailValue = emailInput.val();
+            let csrfValue = $("input[name='_csrf']").val();
+            let param = {
+                id: idValue,
+                email: emailValue,
+                _csrf: csrfValue
+            };
+
+            $.post(url, param, function(response) {
+               if(response == "Unique") {
+                   $("#emailStatus").prop("hidden", "hidden");
+                   btnSubmit.prop("disabled", false);
+               } else if(response == "Not unique") {
+                   $("#emailStatus").prop("hidden", false);
+                   btnSubmit.prop("disabled", true);
+               }
+            });
+        }
+    </script>
+</body>
+</html>

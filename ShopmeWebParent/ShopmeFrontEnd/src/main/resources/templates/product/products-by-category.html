@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>Products of Category: [[${category.name}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+    <style>
+        .category-div {
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        .category-img {
+            height: 90px;
+            object-fit: cover;
+        }
+
+        .product-img {
+            height: 120px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments ::header_menu()"></div>
+        <div th:replace="fragments ::secondary_menu()"></div>
+
+        <div class="mb-5">
+            <h3>Products of Category: <span class="font-italic">[[${category.name}]]</span> </h3>
+
+            <div>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/}">Home</a>
+                        </li>
+                        <th:block th:each="parent : ${categoryParents}">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{'/c/' + ${parent.alias}}">[[${parent.name}]]</a>
+                            </li>
+                        </th:block>
+                        <li class="breadcrumb-item">
+                            <a th:href="@{'/c/' + ${category.alias}}">[[${category.name}]]</a>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!--      All sub-category      -->
+            <div class="category-div mb-5">
+                <div th:if="${#lists.size(categoryChildren) > 0}">
+                    <h4 class="font-italic mb-3">Sub categories</h4>
+                </div>
+                <div class="row">
+                    <th:block th:each="category : ${categoryChildren}">
+                        <div class="col" th:if="${category.enabled}">
+                            <div>
+                                <img class="category-img" th:src="@{${category.getImagePath}}">
+                            </div>
+                            <div>
+                                <a class="text-dark" th:href="@{'/c/' + ${category.alias}}">[[${category.name}]]</a>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+
+            <!--      All products of category      -->
+            <div class="row">
+                <th:block th:each="product : ${products}">
+                    <div class="col">
+                        <div>
+                            <img class="product-img" th:src="@{${product.getMainImagePath}}">
+                        </div>
+                        <div>
+                            <a class="text-dark" th:href="@{'/p/' + ${product.alias}}"
+                               th:title="${product.name}">[[${product.getShorterName}]]</a>
+                        </div>
+                        <div>
+                            <div th:if="${product.discountPercent == 0}">
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}" style="color: darkcyan">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}" style="color: darkcyan">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+                            </div>
+                            <div th:if="${product.discountPercent > 0}">
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}"
+                                      style="font-size: larger; color: darkred">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}"
+                                      style="font-size: larger; color: darkred">[[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+
+                                <del th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</del>
+                                <del th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</del>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+        <!--    PAGINATION    -->
+        <div class="text-center" th:if="${totalElements > 0}">
+            <p class="font-weight-bold">Showing product #[[${startCount}]] to #[[${endCount}]] of total [[${totalElements}]] products</p>
+        </div>
+
+        <div class="text-center" th:if="${totalElements == 0}">
+            <p class="font-weight-bold font-italic">Product Not Found</p>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/c/' + ${category.alias} + '/page/1'}">First</a>
+                    </li>
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/c/' + ${category.alias} + '/page/' + ${currentPage - 1}}">Previous</a>
+                    </li>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+                            <a class="page-link" th:href="@{'/c/' + ${category.alias} + '/page/' + ${i}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/c/' + ${category.alias} + '/page/' + ${currentPage + 1}}">Next</a>
+                    </li>
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/c/' + ${category.alias} + '/page/' + ${totalPages}}">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div th:replace="fragments ::footer_menu()"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <div id="productDetailsDiv" th:if="${product.id != null}">
+            <th:block th:each="detail, status : ${product.details}">
+                <div th:id="${'detail' + status.count}" class="form-inline">
+                    <input type="hidden" name="detailId" th:value="${detail.id}">
+
+                    <label class="m-3">Name:</label>
+                    <input class="form-control w-25" name="detailName" type="text" th:value="${detail.name}">
+
+                    <label class="m-3">Value:</label>
+                    <input class="form-control w-25" name="detailValue" type="text" th:value="${detail.value}">
+
+                    <a class="fas fa-times-circle fa-2x ml-3 icon-dark" style="cursor: pointer"
+                       th:onclick="'javascript:removeDetail(' + ${status.count} + ')'"></a>
+                </div>
+            </th:block>
+
+            <div th:id="${'detail' + totalDetails}" class="form-inline">
+                <input type="hidden" name="detailId" value="0">
+
+                <label class="m-3">Name:</label>
+                <input class="form-control w-25" name="detailName" type="text">
+
+                <label class="m-3">Value:</label>
+                <input class="form-control w-25" name="detailValue" type="text">
+            </div>
+        </div>
+
+        <div id="productDetailsDiv" th:if="${product.id == null}">
+            <div id="detail1" class="form-inline">
+                <input type="hidden" name="detailId" value="0">
+
+                <label class="m-3">Name:</label>
+                <input class="form-control w-25" name="detailName" type="text">
+
+                <label class="m-3">Value:</label>
+                <input class="form-control w-25" name="detailValue" type="text">
+            </div>
+        </div>
+
+        <div>
+            <input class="btn btn-secondary m-3" type="button" value="Add New Detail"
+                onclick="addNewDetailHandle()">
+        </div>
+    </div>
+</body>
+</html>

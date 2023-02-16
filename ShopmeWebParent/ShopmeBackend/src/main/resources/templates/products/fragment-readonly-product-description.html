@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <div class="my-3">
+            <label class="font-weight-bold">Short Description:</label>
+            <div class="border border-secondary rounded p-3" th:utext="${product.shortDescription}"></div>
+            <input type="hidden" th:field="${product.shortDescription}">
+        </div>
+
+        <div>
+            <label class="font-weight-bold">Full Description:</label>
+            <div class="border border-secondary rounded p-3" th:utext="${product.fullDescription}"></div>
+            <input type="hidden" th:field="${product.fullDescription}">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <div id="mainImageDiv" class="border border-secondary rounded p-3">
+        <div>
+            <label class="font-weight-bold">Main image:</label>
+        </div>
+        <div class="my-3">
+            <img id="thumbnail" class="img-fluid" th:src="@{${product.getMainImagePath}}">
+        </div>
+        <div>
+            <input id="fileImage" type="file" name="fileImage" accept="image/png, image/jpeg">
+        </div>
+        <div>
+            <div class="alert alert-warning" th:if="${isMainImageBlank}">The main image can't be blank!</div>
+        </div>
+        <!--    This line of code sets mainImage field in edit mode if user doesn't change main image    -->
+        <input type="hidden" th:field="*{mainImage}">
+    </div>
+
+    <br>
+
+    <!--    Iterate extra images in edit mode    -->
+    <div id="extraImageDiv" class="row" th:if="${product.id != null}">
+        <th:block th:each="extraImage, status : ${product.images}">
+            <div th:id="${'extraImage' + status.count}" class="border border-secondary rounded p-3 extraImage">
+                <div th:id="${'extraImageHeader' + status.count}" class="extraImageHeader">
+                    <label class="font-weight-bold">Extra image #[[${status.count}]]:</label>
+                    <a class="fas fa-times-circle fa-2x float-right icon-dark" style="cursor: pointer"
+                       th:onclick="'javascript:removeExtraImage(' + ${status.count} + ')'"></a>
+                </div>
+                <div class="my-3">
+                    <img th:id="${'extraThumbnail' + status.count}" class="img-fluid extra-thumbnail" th:src="@{${'/u/product-images/' + product.id + '/extras/' + extraImage.name}}">
+                </div>
+                <div>
+                    <input th:id="${'fileExtraImage' + status.count}" type="file" name="fileExtraImage" accept="image/png, image/jpeg">
+                </div>
+                <input th:id="${'imageId' + (status.count)}" type="hidden" name="imageIds" th:value="${extraImage.id}">
+                <input th:id="${'imageName' + (status.count)}" type="hidden" name="imageNames" th:value="${extraImage.name}">
+            </div>
+        </th:block>
+
+        <div th:id="${'extraImage' + totalExtraImages}" class="border border-secondary rounded p-3 extraImage">
+            <div th:id="${'extraImageHeader' + totalExtraImages}" class="extraImageHeader">
+                <label class="font-weight-bold">Extra image #[[${totalExtraImages}]]:</label>
+            </div>
+            <div class="my-3">
+                <img th:id="${'extraThumbnail' + totalExtraImages}" class="img-fluid extra-thumbnail" th:src="@{/images/image-thumbnail.png}">
+            </div>
+            <div>
+                <input th:id="${'fileExtraImage' + totalExtraImages}" type="file" name="fileExtraImage" accept="image/png, image/jpeg">
+            </div>
+        </div>
+    </div>
+
+    <!--    Iterate extra images in new mode    -->
+    <th:block th:if="${product.id == null}">
+        <div id="extraImageDiv" class="row">
+            <div id="extraImage1" class="border border-secondary rounded p-3 extraImage">
+                <div id="extraImageHeader1">
+                    <label class="font-weight-bold">Extra image #1:</label>
+                </div>
+                <div class="my-3">
+                    <img id="extraThumbnail1" class="img-fluid extra-thumbnail" th:src="@{/images/image-thumbnail.png}">
+                </div>
+                <div>
+                    <input id="fileExtraImage1" type="file" name="fileExtraImage" accept="image/png, image/jpeg">
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>Home - Shopme Admin</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div class="mb-2">
+            <h2>Customer Management</h2>
+            <a class="mr-2 btn btn-secondary" th:href="@{/users/export/csv}">Export to CSV</a>
+        </div>
+
+        <!--    SEARCH FORM    -->
+        <div class="mb-2">
+            <form class="form-inline" th:action="@{'/customers/page/1'}">
+                <input type="hidden" name="sortField" th:value="${sortField}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                <input class="form-control mr-1" type="search" name="keyword" th:value="${keyword}" placeholder="Search customer...">
+
+                <button class="btn btn-primary mr-1" type="submit">Search</button>
+                <button class="btn btn-secondary btn-clear" type="button">Clear</button>
+            </form>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${message}">
+            [[${message}]]
+        </div>
+
+        <!--    Customer TABLE    -->
+        <div>
+            <table class="table table-responsive-xl table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'id'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=id&sortDir=asc&keyword=' + ${keyword}}">ID</a>
+                            <a class="text-white" th:if="${sortField == 'id'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">ID</a>
+                            <span th:if="${sortField == 'id'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'firstName'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=firstName&sortDir=asc&keyword=' + ${keyword}}">First Name</a>
+                            <a class="text-white" th:if="${sortField == 'firstName'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">First Name</a>
+                            <span th:if="${sortField == 'firstName'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'lastName'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=lastName&sortDir=asc&keyword=' + ${keyword}}">Last Name</a>
+                            <a class="text-white" th:if="${sortField == 'lastName'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">Last Name</a>
+                            <span th:if="${sortField == 'lastName'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'email'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=email&sortDir=asc&keyword=' + ${keyword}}">E-mail</a>
+                            <a class="text-white" th:if="${sortField == 'email'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=email&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">E-mail</a>
+                            <span th:if="${sortField == 'email'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'city'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=city&sortDir=asc&keyword=' + ${keyword}}">City</a>
+                            <a class="text-white" th:if="${sortField == 'city'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=city&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">City</a>
+                            <span th:if="${sortField == 'city'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'state'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=state&sortDir=asc&keyword=' + ${keyword}}">State</a>
+                            <a class="text-white" th:if="${sortField == 'state'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=state&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">State</a>
+                            <span th:if="${sortField == 'state'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'country'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=country&sortDir=asc&keyword=' + ${keyword}}">Country</a>
+                            <a class="text-white" th:if="${sortField == 'country'}" th:href="@{'/customers/page/' + ${currentPage} + '?sortField=country&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">Country</a>
+                            <span th:if="${sortField == 'country'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>Enabled</th>
+
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="customer : ${customers}">
+                        <tr>
+                            <td>[[${customer.id}]]</td>
+                            <td>[[${customer.firstName}]]</td>
+                            <td>[[${customer.lastName}]]</td>
+                            <td>[[${customer.email}]]</td>
+                            <td>[[${customer.city}]]</td>
+                            <td>[[${customer.state}]]</td>
+                            <td>[[${customer.country.name}]]</td>
+                            <td>
+                                <a class="fas fa-check-circle fa-2x icon-green" th:if="${customer.enabled}"
+                                   th:href="@{'/customers/update-status/' + ${customer.id}}"></a>
+                                <a class="fas fa-circle fa-2x icon-dark" th:if="${!customer.enabled}"
+                                   th:href="@{'/customers/update-status/' + ${customer.id}}"></a>
+                            </td>
+                            <td>
+                                <a class="fas fa-file-alt fa-2x icon-green link-details"
+                                   th:href="@{'/customers/details/' + ${customer.id}}"></a>
+                                &nbsp;
+                                <a class="fas fa-edit fa-2x icon-green" th:href="@{'/customers/edit/' + ${customer.id}}"></a>
+                                &nbsp;
+                                <a class="fas fa-trash fa-2x icon-dark link-delete"
+                                   th:href="@{'/customers/delete/' + ${customer.id}}" th:customerId="${customer.id}"></a>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!--    PAGINATION    -->
+        <div class="text-center" th:if="${totalElements > 0}">
+            <p class="font-weight-bold">Showing customer #[[${startCount}]] to #[[${endCount}]] of total [[${totalElements}]] customers</p>
+        </div>
+
+        <div class="text-center" th:if="${totalElements == 0}">
+            <p class="font-weight-bold font-italic">Product Not Found</p>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/customers/page/1?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">First</a>
+                    </li>
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/customers/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Previous</a>
+                    </li>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+                            <a class="page-link" th:href="@{'/customers/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/customers/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
+                    </li>
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/customers/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!--    Customer DETAILS DIALOG    -->
+        <div class="modal fade" id="customerDetailsDialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <!--    Confirmation Modal Dialog (Fade)    -->
+    <div th:replace="fragments :: confirmationWindow()"></div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // 1
+            $(".btn-clear").on("click", function() {
+               window.location = "[[@{/customers}]]";
+            });
+
+            // 2
+            $(".link-delete").on("click", function(event) {
+                event.preventDefault();
+
+                let customerId = $(this).attr("customerId");
+                let linkDelete = $(this).attr("href");
+                let message = "Are you sure to delete customer ID: " + customerId;
+
+                $("#modalContent").text(message);
+                $("#btnYes").attr("href", linkDelete);
+                $("#confirmDialog").modal("show");
+            });
+
+            // 3
+            $(".link-details").on("click", function(e) {
+                e.preventDefault();
+
+                let linkAttr = $(this).attr("href");
+                $("#customerDetailsDialog").modal("show").find(".modal-content").load(linkAttr);
+            });
+        });
+    </script>
+</body>
+</html>

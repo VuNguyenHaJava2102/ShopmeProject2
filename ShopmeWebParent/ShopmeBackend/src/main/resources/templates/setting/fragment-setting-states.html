@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <div class="mb-3">
+            <p class="font-italic">Use this page to manage states which will be displayed in the customer registration form</p>
+            <p>Click 'Load Countries' button first</p>
+            <input th:id="btnLoadCountriesForState" class="btn btn-primary" type="button" value="Load Countries">
+        </div>
+
+        <div class="mb-3 row">
+            <label class="col-2 col-form-label">Country:</label>
+            <div class="col-10">
+                <select th:id="selectorCountryForState" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <label class="col-2 col-form-label">State:</label>
+            <div class="col-10">
+                <select th:id="selectorState" class="form-control" style="height: 300px" size="2"></select>
+                <span id="totalState" class="font-italic font-weight-bold">Total State: </span>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6 row">
+                <label class="col-4 col-form-label">State Name:</label>
+                <div class="col-8">
+                    <input th:id="fieldStateName" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-6">
+                <input id="btnAddOrNewInState" class="btn btn-secondary" type="button" value="New">
+                <input id="btnUpdateInState" class="btn btn-secondary" type="button" value="Update" disabled>
+                <input id="btnDeleteInState" class="btn btn-secondary" type="button" value="Delete" disabled>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

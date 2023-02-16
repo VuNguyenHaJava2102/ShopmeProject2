@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>Brand Management</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+    <style>
+        .brandLogo {
+            width: 150px;
+            height: auto;
+            border-radius: 7px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div class="mb-2">
+            <h2>Brand Management</h2>
+            <a class="mr-2 btn btn-primary" th:href="@{/brands/new}">Create New Brand</a>
+            <a class="mr-2 btn btn-secondary" th:href="@{/brands/export/csv}">Export to CSV</a>
+        </div>
+
+        <!--    SEARCH FORM    -->
+        <div class="mb-2">
+            <form class="form-inline" th:action="@{'/brands/page/1'}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                <input class="form-control mr-1" type="search" name="keyword" th:value="${keyword}" placeholder="Search category...">
+
+                <button class="btn btn-primary mr-1" type="submit">Search</button>
+                <button class="btn btn-secondary btn-clear" type="button">Clear</button>
+            </form>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${message}">
+            [[${message}]]
+        </div>
+
+        <!--    BRAND TABLE    -->
+        <div>
+            <table class="table table-responsive-xl table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Logo</th>
+                        <th>
+                            <a class="text-white" th:href="@{'/brands/page/' + ${currentPage} + '?&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">Name</a>
+                            <span>
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>Categories</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="brand : ${brands}">
+                        <tr>
+                            <td>[[${brand.id}]]</td>
+                            <td style="width: 15%">
+                                <img class="img-fluid brandLogo" th:src="@{${brand.getLogoPath}}">
+                            </td>
+                            <td>[[${brand.name}]]</td>
+                            <td>
+                                <th:block th:each="category : ${brand.categories}">
+                                    <span class="badge badge-secondary">[[${category.name}]]</span>
+                                </th:block>
+                            </td>
+                            <td>
+                                <a class="fas fa-edit fa-2x icon-green"
+                                   th:href="@{'/brands/edit/' + ${brand.id}}"></a>
+                                &nbsp;
+                                <a class="fas fa-trash fa-2x icon-dark link-delete"
+                                   th:href="@{'/brands/delete/' + ${brand.id}}" th:brandId="${brand.id}"></a>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!--    PAGINATION    -->
+        <div class="text-center" th:if="${totalElements > 0}">
+            <p class="font-weight-bold">Showing brand #[[${startCount}]] to #[[${endCount}]] of total [[${totalElements}]]
+                <span th:if="${keyword == ''}">brands</span>
+                <span th:if="${keyword != ''}">search results</span>
+            </p>
+        </div>
+
+        <div class="text-center" th:if="${totalElements == 0}">
+            <p class="font-weight-bold font-italic">No Brand Found</p>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/brands/page/1?sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">First</a>
+                    </li>
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/brands/page/' + ${currentPage - 1} + '?sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Previous</a>
+                    </li>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+                            <a class="page-link" th:href="@{'/brands/page/' + ${i} + '?sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/brands/page/' + ${currentPage + 1} + '?sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
+                    </li>
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/brands/page/' + ${totalPages} + '?sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <!--    CONFIRMATION WINDOW    -->
+    <div th:replace="fragments :: confirmationWindow()"></div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".link-delete").on("click", function(e) {
+                e.preventDefault();
+
+                let clickDeleteBtn = $(this);
+                let link = clickDeleteBtn.attr("href");
+                let brandId = clickDeleteBtn.attr("brandId");
+
+                $("#modalContent").text("Are you sure to delete brand ID " + brandId);
+                $("#btnYes").attr("href", link);
+                $("#confirmDialog").modal();
+            })
+        });
+    </script>
+</body>
+</html>

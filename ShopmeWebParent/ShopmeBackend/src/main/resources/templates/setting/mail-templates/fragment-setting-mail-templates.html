@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <form th:action="@{/settings/save-mail-templates}" method="post">
+            <div>
+                <ul class="nav nav-tabs" id="mailTemplatesTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" data-toggle="tab" data-target="#customerVerification" type="button" role="tab">Customer Verification</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-toggle="tab" data-target="#orderConfirmation" type="button" role="tab">Order Confirmation</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active p-3" id="customerVerification" role="tabpanel">
+                        <div th:replace="/setting/mail-templates/fragment-mail-templates-customer :: content()"></div>
+                    </div>
+                    <div class="tab-pane p-3" id="orderConfirmation" role="tabpanel">
+                        <h2>Order Confirmation Email Template</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary mr-2" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

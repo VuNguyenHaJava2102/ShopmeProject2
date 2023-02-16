@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${pageTitle}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <link rel="stylesheet" type="text/css" th:src="@{/u/richtext/richtext.min.css}">
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/u/richtext/jquery.richtext.min.js}"></script>
+
+    <style>
+        #mainImageDiv,
+        .extraImage {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        #thumbnail,
+        .extra-thumbnail{
+            height: 120px;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div class="mb-3">
+            <h2>Product Management | [[${pageTitle}]]</h2>
+            <span sec:authorize="hasAnyAuthority('Salesperson')" class="font-italic">(Salesperson can only edit cost, price and discount percent)</span>
+        </div>
+
+        <div class="alert alert-warning text-center" th:if="${message != null}">
+            [[${message}]]
+        </div>
+
+        <div>
+            <form class="border border-secondary p-3 rounded" method="post" enctype="multipart/form-data"
+                  th:action="@{/products/save}" th:object="${product}">
+                <input type="hidden" th:field="*{id}">
+                <input id="categoryId" type="hidden" th:value="${product.category.id}"
+                       th:if="${product.category != null}">
+                <div>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-toggle="tab" data-target="#overview" type="button" role="tab">Overview</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-toggle="tab" data-target="#description" type="button" role="tab">Description</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-toggle="tab" data-target="#images" type="button" role="tab">Images</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-toggle="tab" data-target="#details" type="button" role="tab">Details</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-toggle="tab" data-target="#shipping" type="button" role="tab">Shipping</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active p-3" id="overview" role="tabpanel">
+                            <div th:replace="/products/fragment-product-overview :: content()"></div>
+                        </div>
+                        <div class="tab-pane p-3" id="description" role="tabpanel">
+                            <div sec:authorize="hasAnyAuthority('Admin', 'Editor')" th:replace="/products/fragment-product-description :: content()"></div>
+                            <div sec:authorize="hasAuthority('Salesperson')" th:replace="/products/fragment-readonly-product-description :: content()"></div>
+                        </div>
+                        <div class="tab-pane p-3" id="images" role="tabpanel">
+                            <div sec:authorize="hasAnyAuthority('Admin', 'Editor')" th:replace="/products/fragment-product-images :: content()"></div>
+                            <div sec:authorize="hasAuthority('Salesperson')" th:replace="/products/fragment-readonly-product-images :: content()"></div>
+                        </div>
+                        <div class="tab-pane p-3" id="details" role="tabpanel">
+                            <div sec:authorize="hasAnyAuthority('Admin', 'Editor')" th:replace="/products/fragment-product-details :: content()"></div>
+                            <div sec:authorize="hasAuthority('Salesperson')" th:replace="/products/fragment-readonly-product-details :: content()"></div>
+                        </div>
+                        <div class="tab-pane p-3" id="shipping" role="tabpanel">
+                            <div sec:authorize="hasAnyAuthority('Admin', 'Editor')" th:replace="/products/fragment-product-shipping :: content()"></div>
+                            <div sec:authorize="hasAuthority('Salesperson')" th:replace="/products/fragment-readonly-product-shipping :: content()"></div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary mr-2" type="submit">Save</button>
+                        <button id="cancelBtn" class="btn btn-secondary" type="button">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/product-form-overview.js}"></script>
+    <script th:src="@{/js/product-form-images.js}"></script>
+    <script th:src="@{/js/product-form-details.js}"></script>
+    <script type="text/javascript">
+        let brandUrlModule = "[[@{/brands}]]";
+        let productUrlModule = "[[@{/products}]]";
+        let dropDownBrand = $("#brand");
+        let dropDownCategory = $("#category");
+
+        let totalExtraImages = [[${totalExtraImages}]];
+        let totalDetails = [[${totalDetails}]];
+        let defaultImageThumbnail = "[[@{/images/image-thumbnail.png}]]";
+    </script>
+</body>
+</html>
