@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${SITE_NAME}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+    <style>
+        .product-img {
+            width: 200px;
+            height: auto;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: header_menu()"></div>
+        <div th:replace="fragments :: secondary_menu()"></div>
+
+        <div>
+            <h2>Your Cart</h2>
+
+            <div class="row">
+                <div class="col-8">
+                    <th:block th:each="item, status : ${cartItems}">
+                        <div class="row border border-secondary rounded p-3 m-3">
+                            <div class="col-1">     <!--    index, delete button   -->
+                                <span>[[${status.count}]]</span>
+                                <br>
+                                <span class="font-weight-bold text-danger">DEL</span>
+                            </div>
+                            <div class="col-4">     <!--    image   -->
+                                <img class="img-fluid product-img" th:src="@{${item.product.getMainImagePath}}">
+                            </div>
+                            <div class="col-7">     <!--    name, quantity control, price   -->
+                                <a class="h4" th:href="@{'/p/' + ${item.product.alias}}">[[${item.product.getShorterName}]]</a>
+                                <div th:replace="/cart/fragment-quantity-control :: content(${item.quantity}, ${item.product.id})"></div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+
+                <div class="col-4">
+                    Total Money
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments ::footer_menu()"></div>
+    </div>
+</body>
+</html>

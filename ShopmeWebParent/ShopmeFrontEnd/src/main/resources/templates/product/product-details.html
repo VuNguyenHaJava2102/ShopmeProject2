@@ -96,13 +96,16 @@
 
             <!--   Column 3: Quantity, add button      -->
             <div class="col-sm-2">
+                <div th:if="${!product.inStock}">
+                    <span class="font-weight-bold text-danger mb-1">Out of Stock</span>
+                </div>
                 <div th:if="${product.inStock}">
                     <span class="font-weight-bold text-success mb-1">In Stock</span>
                     <div class="mb-3">
                         <div th:replace="/cart/fragment-quantity-control :: content(1, ${product.id})"></div>
                     </div>
                     <div>
-                        <input class="btn btn-primary" type="button" value="Add to Cart">
+                        <input th:id="addToCartBtn" class="btn btn-primary" type="button" value="Add to Cart">
                     </div>
                 </div>
             </div>
@@ -128,9 +131,16 @@
     </div>
 
     <div th:replace="/product/image-carousel :: content()"></div>
+    <div th:replace="/fragments :: notificationDialog()"></div>
 
     <script th:src="@{/js/cart/quantity-control.js}"></script>
+    <script th:src="@{/js/cart/add-to-cart.js}"></script>
     <script type="text/javascript">
+        let contextPath = "[[@{/}]]";
+        let productId = "[[${product.id}]]";
+        let csrfHeaderName = "[[${_csrf.headerName}]]";
+        let csrfValue = "[[${_csrf.token}]]";
+
         let bigImg = $("#bigImg");
 
         $(document).ready(function() {
