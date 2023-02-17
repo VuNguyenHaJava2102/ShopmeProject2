@@ -59,4 +59,10 @@ public class CartItemService {
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
     }
+
+    // 4
+    public void deleteCartItem(int productId,
+                               Customer customer) {
+        cartItemRepository.deleteByCustomerAndProduct(customer.getId(), productId);
+    }
 }

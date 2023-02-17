@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -44,6 +45,16 @@ public class CartItemController {
                                          @AuthenticationPrincipal CustomerUserDetails customerUserDetails) {
         Customer loggedCustomer = customerUserDetails.getCustomer();
         cartItemService.updateCartItemQuantity(quantity, productId, loggedCustomer);
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/cart/delete/{productId}")
+    public String deleteCartItem(@PathVariable("productId") int productId,
+                                 @AuthenticationPrincipal CustomerUserDetails customerUserDetails,
+                                 RedirectAttributes redirectAttributes) {
+        Customer loggedCustomer = customerUserDetails.getCustomer();
+        cartItemService.deleteCartItem(productId, loggedCustomer);
+        redirectAttributes.addFlashAttribute("message", "Delete item successful!");
         return "redirect:/cart";
     }
 }

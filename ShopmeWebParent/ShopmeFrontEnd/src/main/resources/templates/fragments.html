@@ -143,5 +143,24 @@
         </div>
     </div>
 
+    <!--    CONFIRMATION DIALOG    -->
+    <div id="confirmDialog" class="modal fade text-center" th:fragment="confirmationDialog()">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Confirmation</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalContent">Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <a id="btnYes" class="btn btn-success" href="" onclick="">Yes</a>
+                    <button id="btnNo" type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
