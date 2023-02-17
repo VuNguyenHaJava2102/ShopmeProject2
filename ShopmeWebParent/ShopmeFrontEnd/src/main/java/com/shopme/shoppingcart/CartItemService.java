@@ -7,10 +7,12 @@ import com.shopme.product.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class CartItemService {
 
     private final CartItemRepository cartItemRepository;
@@ -46,5 +48,13 @@ public class CartItemService {
     // 2
     public List<CartItem> getAllCartItemsByCustomer(Customer customer) {
         return cartItemRepository.findByCustomer(customer);
+    }
+
+    // 3
+    public void updateCartItemQuantity(int quantity,
+                                       int productId,
+                                       int customerId) {
+        System.out.println("service");
+        cartItemRepository.updateQuantityCartItem(quantity, customerId, productId);
     }
 }

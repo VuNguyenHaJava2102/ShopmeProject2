@@ -31,6 +31,4 @@ public class CartItemRestController {
             return ex.getMessage();
         }
     }
-
-
 }

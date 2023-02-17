@@ -52,8 +52,8 @@ public class CartItemRepositoryTest {
 
     @Test
     public void testUpdateQuantityCartItem() {
-        cartItemRepository.updateQuantityCartItem(5, 1, 1);
-        CartItem cartItem = entityManager.find(CartItem.class, 1);
+        cartItemRepository.updateQuantityCartItem(3, 1, 91);
+        CartItem cartItem = entityManager.find(CartItem.class, 3);
         System.err.println(cartItem);
     }
 

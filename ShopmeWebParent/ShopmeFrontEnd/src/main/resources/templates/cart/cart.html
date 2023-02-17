@@ -27,9 +27,9 @@
         <div>
             <h2>Your Cart</h2>
 
-            <div class="row">
+            <div class="row" th:if="${#lists.size(cartItems) > 0}">
                 <div class="col-8">
-                    <th:block th:each="item, status : ${cartItems}">
+                    <th:block th:each="item, status : ${cartItems}" th:with="product = ${item.product}">
                         <div class="row border border-secondary rounded p-3 m-3">
                             <div class="col-1">     <!--    index, delete button   -->
                                 <span>[[${status.count}]]</span>
@@ -37,22 +37,88 @@
                                 <span class="font-weight-bold text-danger">DEL</span>
                             </div>
                             <div class="col-4">     <!--    image   -->
-                                <img class="img-fluid product-img" th:src="@{${item.product.getMainImagePath}}">
+                                <img class="img-fluid product-img" th:src="@{${product.getMainImagePath}}">
                             </div>
                             <div class="col-7">     <!--    name, quantity control, price   -->
-                                <a class="h4" th:href="@{'/p/' + ${item.product.alias}}">[[${item.product.getShorterName}]]</a>
-                                <div th:replace="/cart/fragment-quantity-control :: content(${item.quantity}, ${item.product.id})"></div>
+                                <a class="h4" th:href="@{'/p/' + ${product.alias}}"
+                                   target="_blank" th:title="${product.name}">
+                                    [[${product.getShorterName}]]
+                                </a>
+
+                                <div>
+                                    <nav>
+                                        <ul class="pagination">
+                                            <form th:id="${'form-minus' + product.id}" th:action="@{'/cart/update/' + ${product.id} + '/' + ${item.quantity - 1}}" method="post">
+                                                <li th:id="${'minus' + product.id}" class="minus-li page-item disabled">
+                                                    <button th:pid="${product.id}" class="page-link btn link-minus">-</button>
+                                                </li>
+                                            </form>
+                                            <li>
+                                                <input th:id="${'quantity' + product.id}" th:pid="${product.id}" class="form-control text-center quantity-value" type="text" th:value="${item.quantity}"
+                                                       readonly style="width: 50px">
+                                            </li>
+                                            <form th:id="${'form-plus' + product.id}" th:action="@{'/cart/update/' + ${product.id} + '/' + ${item.quantity + 1}}" method="post">
+                                                <li th:id="${'plus' + product.id}" class="plus-li page-item disabled">
+                                                    <button th:pid="${product.id}" class="page-link btn link-plus">+</button>
+                                                </li>
+                                            </form>
+                                        </ul>
+                                    </nav>
+                                </div>
+
+                                <div>
+                                    <div th:if="${product.discountPercent == 0}">
+                                        <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">X [[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                        <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">X [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+                                    </div>
+                                    <div th:if="${product.discountPercent > 0}">
+                                    <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}"
+                                          style="font-size: larger; color: darkred">X [[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                        <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}"
+                                              style="font-size: larger; color: darkred">X [[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+
+                                        <del th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</del>
+                                        <del th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</del>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="font-weight-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">
+                                        = [[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(item.getSubtotal, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                    <span class="font-weight-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">
+                                        = [[${#numbers.formatDecimal(item.getSubtotal, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+                                </div>
                             </div>
                         </div>
                     </th:block>
                 </div>
 
-                <div class="col-4">
-                    Total Money
+                <div class="col-4" th:unless="${#lists.isEmpty(cartItems)}">
+                    <h2 class="text-danger">Estimated Total:</h2>
+                    <div>
+                        <h4 th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">= [[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(estimatedTotal, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</h4>
+                        <h4 th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">= [[${#numbers.formatDecimal(estimatedTotal, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</h4>
+                    </div>
+                    <div>
+                        <button class="btn btn-danger p-2">Checkout</button>
+                    </div>
                 </div>
             </div>
+
+            <div class="text-center" th:if="${#lists.isEmpty(cartItems)}">
+                <h3 class="font-italic">You haven't chosen any products!</h3>
+            </div>
         </div>
+
+
         <div th:replace="fragments ::footer_menu()"></div>
     </div>
+
+    <script th:src="@{/js/cart/quantity-control-in-cart.js}"></script>
+    <script type="text/javascript">
+        let contextPath = "[[@{/}]]";
+        let csrfHeaderName = "[[${_csrf.headerName}]]";
+        let csrfValue = "[[${_csrf.token}]]";
+    </script>
 </body>
 </html>
