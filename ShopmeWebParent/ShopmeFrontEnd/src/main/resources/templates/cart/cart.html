@@ -48,9 +48,10 @@
                                 <div>
                                     <nav>
                                         <ul class="pagination">
-                                            <form th:id="${'form-minus' + product.id}" th:action="@{'/cart/update/' + ${product.id} + '/' + ${item.quantity - 1}}" method="post">
+                                            <form th:id="${'form-minus' + product.id}"  method="post">
                                                 <li th:id="${'minus' + product.id}" class="minus-li page-item disabled">
-                                                    <button th:pid="${product.id}" class="page-link btn link-minus">-</button>
+                                                    <a th:pid="${product.id}" class="page-link btn link-minus"
+                                                            th:href="@{'/cart/update/' + ${product.id} + '/' + ${item.quantity - 1}}">-</a>
                                                 </li>
                                             </form>
                                             <li>
@@ -59,7 +60,8 @@
                                             </li>
                                             <form th:id="${'form-plus' + product.id}" th:action="@{'/cart/update/' + ${product.id} + '/' + ${item.quantity + 1}}" method="post">
                                                 <li th:id="${'plus' + product.id}" class="plus-li page-item disabled">
-                                                    <button th:pid="${product.id}" class="page-link btn link-plus">+</button>
+                                                    <a th:pid="${product.id}" class="page-link btn link-plus"
+                                                       th:href="@{'/cart/update/' + ${product.id} + '/' + ${item.quantity + 1}}">+</a>
                                                 </li>
                                             </form>
                                         </ul>

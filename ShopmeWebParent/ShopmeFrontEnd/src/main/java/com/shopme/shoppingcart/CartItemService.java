@@ -53,8 +53,10 @@ public class CartItemService {
     // 3
     public void updateCartItemQuantity(int quantity,
                                        int productId,
-                                       int customerId) {
-        System.out.println("service");
-        cartItemRepository.updateQuantityCartItem(quantity, customerId, productId);
+                                       Customer customer) {
+        Product product = productRepository.findById(productId).get();
+        CartItem cartItem = cartItemRepository.findByCustomerAndProduct(customer, product);
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
     }
 }

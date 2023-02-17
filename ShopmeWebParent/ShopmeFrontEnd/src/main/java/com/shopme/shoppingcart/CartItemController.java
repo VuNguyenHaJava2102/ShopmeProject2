@@ -38,13 +38,12 @@ public class CartItemController {
         return "cart/cart.html";
     }
 
-    @PostMapping("/cart/update/{productId}/{quantity}")
+    @GetMapping("/cart/update/{productId}/{quantity}")
     public String updateCartItemQuantity(@PathVariable("productId") int productId,
                                          @PathVariable("quantity") int quantity,
                                          @AuthenticationPrincipal CustomerUserDetails customerUserDetails) {
         Customer loggedCustomer = customerUserDetails.getCustomer();
-        cartItemService.updateCartItemQuantity(quantity, loggedCustomer.getId(), productId);
-        System.out.println("controller");
+        cartItemService.updateCartItemQuantity(quantity, productId, loggedCustomer);
         return "redirect:/cart";
     }
 }

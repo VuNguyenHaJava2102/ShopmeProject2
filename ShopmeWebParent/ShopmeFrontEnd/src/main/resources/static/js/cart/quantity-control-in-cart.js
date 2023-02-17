@@ -1,29 +1,29 @@
 $(document).ready(function() {
    checkQuantityInputs();
 
-   $(".link-minus").each(function() {
-      $(this).on("click", function(event) {
-         event.preventDefault();
-
-         let productId = $(this).attr("pid");
-         let form = $("#form-minus" + productId);
-
-         form.submit();
-         console.log("minus-s");
-      });
-   });
-
-   $(".link-plus").each(function() {
-      $(this).on("click", function(event) {
-         event.preventDefault();
-
-         let productId = $(this).attr("pid");
-         let form = $("#form-plus" + productId);
-
-         form.submit();
-         console.log("plus-s");
-      });
-   });
+   // $(".link-minus").each(function() {
+   //    $(this).on("click", function(event) {
+   //       event.preventDefault();
+   //
+   //       let productId = $(this).attr("pid");
+   //       let form = $("#form-minus" + productId);
+   //
+   //       form.submit();
+   //       console.log("minus-s");
+   //    });
+   // });
+   //
+   // $(".link-plus").each(function() {
+   //    $(this).on("click", function(event) {
+   //       event.preventDefault();
+   //
+   //       let productId = $(this).attr("pid");
+   //       let form = $("#form-plus" + productId);
+   //
+   //       form.submit();
+   //       console.log("plus-s");
+   //    });
+   // });
 
    // $(".link-plus").each(function(index) {
    //    $(this).on("click", function(event) {
