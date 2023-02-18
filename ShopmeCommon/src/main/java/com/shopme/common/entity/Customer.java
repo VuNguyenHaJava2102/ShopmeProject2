@@ -102,4 +102,21 @@ public class Customer {
     public String getFullName() {
         return firstName + " " + lastName;
     }
+
+    @Transient
+    public String getAddress() {
+        String address = getFullName() + ", Address 1: " + addressLine1;
+        if(!addressLine2.isBlank()) {
+            address += ", Address 2: " + addressLine2;
+        }
+        address += ", " + city;
+        if(!city.equals(state)) {
+            address += ", " + state;
+        }
+        address += ", " + country.getName();
+        address += ". Postal code: " + postalCode;
+        address += ". Phone number: " + phoneNumber;
+
+        return address;
+    }
 }
