@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${pageTitle}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div>
+            <h2>Shipping Rate Management | [[${pageTitle}]]</h2>
+        </div>
+
+        <div>
+            <form class="border border-secondary p-3" style="max-width: 800px; margin: 0 auto" method="post"
+                  th:action="@{/shipping-rates/save}" th:object="${shippingRate}">
+                <div>
+                    <div>
+                        <input type="hidden" th:field="*{id}">
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Destination Country:</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" th:field="*{country}">
+                                <th:block th:each="country : ${countries}">
+                                    <option th:value="${country.id}">[[${country.name}]]</option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Destination State:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="text" th:field="*{state}" list="stateList">
+                            <div th:id="destinationStatus" class="alert alert-warning" hidden="hidden">This destination already exists!</div>
+                            <datalist th:id="stateList"></datalist>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Shipping Rate(per DIM weight):</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="number" step="0.01" th:field="*{rate}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('rate')}" th:errors="*{rate}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Days to Delivery:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control mb-1" type="number" step="1" th:field="*{days}">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('days')}" th:errors="*{days}"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Cash on Delivery (COD):</label>
+                        <div>
+                            <input class="mr-2" type="checkbox" th:field="*{codSupported}">
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="btnSubmit" class="btn btn-primary mr-2" type="submit">Save</button>
+                        <button id="cancelBtn" class="btn btn-secondary" type="button">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script type="text/javascript">
+        let contextPath = "[[@{/}]]";
+        let selectorCountry;
+        let stateInput;
+        let dataListState;
+        let btnSubmit;
+        let btnCancel;
+
+        $(document).ready(function() {
+            selectorCountry = $("#country");
+            stateInput = $("#state");
+            dataListState = $("#stateList");
+            btnSubmit = $("#btnSubmit");
+            btnCancel = $("#cancelBtn");
+            btnSubmit.prop("disabled", false);
+
+            // Live function
+            // 1
+            selectorCountry.on("change", function() {
+                $("#state").val("").focus();
+                let selectedCountryOption = $("#country option:selected");
+                let selectedCountryId = selectedCountryOption.attr("value");
+                let url = contextPath + "states/get-all/" + selectedCountryId;
+
+                $.get(url, function(responseJson) {
+
+                    dataListState.empty();
+                    $.each(responseJson, function(index, state) {
+                        dataListState.append(`<option value="${state.name}"></option>`);
+                    });
+                });
+            });
+
+            // 2
+            stateInput.on("change", function() {
+                checkCountryAndState();
+            });
+
+            // 3
+            btnCancel.on("click", function() {
+               window.location = "[[@{/shipping-rates}]]";
+            });
+        });
+
+        // Utility function
+        // 1
+        let checkCountryAndState = () => {
+            let url = contextPath + "shipping-rates/check-country-state";
+            let shippingRateId = $("#id").val();
+            shippingRateId = shippingRateId == "" ? "0" : shippingRateId;
+            let countryId = selectorCountry.val();
+            let state = stateInput.val();
+            let csrfValue = $("input[name='_csrf']").val();
+
+            let params = {
+                id: shippingRateId,
+                countryId: countryId,
+                state: state,
+                _csrf: csrfValue
+            }
+
+            $.post(url, params, function(response) {
+                if(response === "Ok") {
+                    $("#destinationStatus").prop("hidden", "hidden");
+                    btnSubmit.prop("disabled", false);
+                } else if(response === "Duplicated") {
+                    $("#destinationStatus").prop("hidden", false);
+                    btnSubmit.prop("disabled", true);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>Home - Shopme Admin</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div class="mb-2">
+            <h2>Shipping Rate Management</h2>
+            <a class="mr-2 btn btn-primary" th:href="@{/shipping-rates/new}">Create New</a>
+        </div>
+
+        <!--    SEARCH FORM    -->
+        <div class="mb-2">
+            <form class="form-inline" th:action="@{'/shipping-rates/page/1'}">
+                <input type="hidden" name="sortField" th:value="${sortField}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                <input class="form-control mr-1" type="search" name="keyword" th:value="${keyword}" placeholder="Search shipping rate...">
+
+                <button class="btn btn-primary mr-1" type="submit">Search</button>
+                <button class="btn btn-secondary btn-clear" type="button">Clear</button>
+            </form>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${message}">
+            [[${message}]]
+        </div>
+
+        <!--    SHIPPING RATE TABLE    -->
+        <div>
+            <table class="table table-responsive-xl table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'id'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=id&sortDir=asc&keyword=' + ${keyword}}">ID</a>
+                            <a class="text-white" th:if="${sortField == 'id'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">ID</a>
+                            <span th:if="${sortField == 'id'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'rate'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=rate&sortDir=asc&keyword=' + ${keyword}}">Rate</a>
+                            <a class="text-white" th:if="${sortField == 'rate'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=rate&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">Rate</a>
+                            <span th:if="${sortField == 'rate'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'days'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=days&sortDir=asc&keyword=' + ${keyword}}">Days to Deliver</a>
+                            <a class="text-white" th:if="${sortField == 'days'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=days&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">Days to Deliver</a>
+                            <span th:if="${sortField == 'days'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'country'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=country&sortDir=asc&keyword=' + ${keyword}}">State</a>
+                            <a class="text-white" th:if="${sortField == 'country'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=country&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">Country</a>
+                            <span th:if="${sortField == 'country'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'state'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=state&sortDir=asc&keyword=' + ${keyword}}">Country</a>
+                            <a class="text-white" th:if="${sortField == 'state'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=state&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">State</a>
+                            <span th:if="${sortField == 'state'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'codSupported'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=codSupported&sortDir=asc&keyword=' + ${keyword}}">COD</a>
+                            <a class="text-white" th:if="${sortField == 'codSupported'}" th:href="@{'/shipping-rates/page/' + ${currentPage} + '?sortField=codSupported&sortDir=' + ${reversedSortDir} + '&keyword=' + ${keyword}}">COD</a>
+                            <span th:if="${sortField == 'codSupported'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="shippingRate : ${shippingRates}">
+                        <tr>
+                            <td>[[${shippingRate.id}]]</td>
+                            <td>[[${shippingRate.rate}]]</td>
+                            <td>[[${shippingRate.days}]]</td>
+                            <td>[[${shippingRate.country.name}]]</td>
+                            <td>[[${shippingRate.state}]]</td>
+                            <td>
+                                <a class="fas fa-check-circle fa-2x icon-green" th:if="${shippingRate.codSupported}"
+                                   th:href="@{'/shipping-rates/update-cod-supported/' + ${shippingRate.id}}"></a>
+                                <a class="fas fa-circle fa-2x icon-dark" th:if="${!shippingRate.codSupported}"
+                                   th:href="@{'/shipping-rates/update-cod-supported/' + ${shippingRate.id}}"></a>
+                            </td>
+                            <td>
+                                <a class="fas fa-edit fa-2x icon-green" th:href="@{'/shipping-rates/edit/' + ${shippingRate.id}}"></a>
+                                &nbsp;
+                                <a class="fas fa-trash fa-2x icon-dark link-delete"
+                                   th:href="@{'/shipping-rates/delete/' + ${shippingRate.id}}" th:shippingRateId="${shippingRate.id}"></a>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!--    PAGINATION    -->
+        <div class="text-center" th:if="${totalElements > 0}">
+            <p class="font-weight-bold">Showing users #[[${startCount}]] to #[[${endCount}]] of total [[${totalElements}]] shipping rates</p>
+        </div>
+
+        <div class="text-center" th:if="${totalElements == 0}">
+            <p class="font-weight-bold font-italic">Shipping Rate Not Found</p>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/shipping-rates/page/1?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">First</a>
+                    </li>
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/shipping-rates/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Previous</a>
+                    </li>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+                            <a class="page-link" th:href="@{'/shipping-rates/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/shipping-rates/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Next</a>
+                    </li>
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/shipping-rates/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword=' + ${keyword}}">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <!--    Confirmation Modal Dialog (Fade)    -->
+    <div th:replace="fragments :: confirmationWindow()"></div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Live function
+            // 1
+            $(".link-delete").on("click", function(event) {
+                event.preventDefault();
+
+                let shippingRateId = $(this).attr("shippingRateId");
+                let message = "Are you sure to delete shipping rate ID: " + shippingRateId;
+                let copyUrl = $(this).attr("href");
+
+                $("#modalContent").text(message);
+                $("#btnYes").attr("href", copyUrl);
+                $("#confirmDialog").modal();
+            });
+
+            // 2
+            $(".btn-clear").on("click", function() {
+                window.location = "[[@{/shipping-rates}]]";
+            })
+        });
+    </script>
+</body>
+</html>
