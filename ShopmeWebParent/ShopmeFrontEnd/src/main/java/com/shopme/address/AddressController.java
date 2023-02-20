@@ -3,6 +3,7 @@ package com.shopme.address;
 import com.shopme.common.entity.Address;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
+import com.shopme.common.exception.AddressNotFoundException;
 import com.shopme.security.CustomerUserDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -68,6 +70,37 @@ public class AddressController {
 
         addressService.saveAddress(address);
         redirectAttributes.addFlashAttribute("message", "Address has been saved!");
+        return "redirect:/address-book";
+    }
+
+    @GetMapping("/address-book/edit/{id}")
+    public String viewEditAddressForm(@PathVariable("id") int id,
+                                      RedirectAttributes redirectAttributes,
+                                      Model model) {
+        try {
+            Address address = addressService.getAddressById(id);
+            List<Country> countryList = addressService.getAllCountriesOrderByName();
+
+            model.addAttribute("address", address);
+            model.addAttribute("countries", countryList);
+            model.addAttribute("pageTitle", "Edit Address");
+
+            return "address/address-form.html";
+        } catch(AddressNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+            return "redirect:/address-book";
+        }
+    }
+
+    @GetMapping("/address-book/delete/{id}")
+    public String deleteAddress(@PathVariable("id") int id,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            addressService.deleteAddressById(id);
+            redirectAttributes.addFlashAttribute("message", "Address has been deleted!");
+        } catch(AddressNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+        }
         return "redirect:/address-book";
     }
 }

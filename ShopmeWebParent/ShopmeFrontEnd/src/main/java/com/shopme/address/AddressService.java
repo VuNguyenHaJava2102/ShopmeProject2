@@ -3,11 +3,13 @@ package com.shopme.address;
 import com.shopme.common.entity.Address;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
+import com.shopme.common.exception.AddressNotFoundException;
 import com.shopme.setting.CountryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,15 +22,29 @@ public class AddressService {
         return countryRepository.findAllByOrderByName();
     }
 
-    //
+    // Main service-function
+    // 1
     public List<Address> getAllAddresses(Customer customer) {
         return addressRepository.findByCustomer(customer);
     }
 
+    // 2
     public void saveAddress(Address address) {
-        if(address.getId() == null) {
-            address.setDefaultForShipping(false);
-        }
         addressRepository.save(address);
+    }
+
+    // 3
+    public Address getAddressById(int id) throws AddressNotFoundException {
+        Optional<Address> addressOptional = addressRepository.findById(id);
+        if(addressOptional.isEmpty()) {
+            throw new AddressNotFoundException("Could not find any address!");
+        }
+        return addressOptional.get();
+    }
+
+    // 4
+    public void deleteAddressById(int id) throws AddressNotFoundException {
+        Address address = getAddressById(id);
+        addressRepository.delete(address);
     }
 }

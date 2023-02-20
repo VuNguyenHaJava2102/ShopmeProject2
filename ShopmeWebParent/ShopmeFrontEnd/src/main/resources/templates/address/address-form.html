@@ -27,6 +27,7 @@
             <div class="form-div border border-secondary p-3 rounded">
                 <form th:action="@{/address-book/save}" th:object="${address}" method="post">
                     <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{defaultForShipping}">
 
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">First name:</label>
@@ -131,7 +132,6 @@
                 let url = contextPath + "settings/get-all-states/" + selectedCountryId;
 
                 $.get(url, function(responseJson) {
-
                     dataListState.empty();
                     $.each(responseJson, function(index, state) {
                         dataListState.append(`<option value="${state.name}"></option>`);

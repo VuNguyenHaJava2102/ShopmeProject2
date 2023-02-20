@@ -54,7 +54,8 @@
                                     </div>
                                     <div class="col-3 row">
                                         <a class="col font-weight-bold text-primary" th:href="@{'/address-book/edit/' + ${address.id}}">EDIT</a>
-                                        <a class="col font-weight-bold text-danger" th:href="@{'/address-book/delete/' + ${address.id}}">DEL</a>
+                                        <a class="col font-weight-bold text-danger link-delete"
+                                           th:href="@{'/address-book/delete/' + ${address.id}}" th:order="${status.count + 1}">DEL</a>
                                     </div>
                                 </div>
                             </div>
@@ -68,25 +69,42 @@
         </div>
 
         <div th:replace="fragments ::footer_menu()"></div>
+
+        <div th:replace="/fragments :: confirmationDialog()"></div>
     </div>
 
     <script type="text/javascript">
-    let hightlightDefaultAddress = () => {
-        let isSubaddDefault = false;
-        let primaryAddressCard = $("#primaryAdd");
+        $(document).ready(function() {
+            $(".link-delete").on("click", function(event) {
+                event.preventDefault();
 
-        $(".sub-add").each(function() {
-            let subAdd = $(this);
-            if(subAdd.hasClass("bg-warning")) {
-                isSubaddDefault = true;
-            }
+                let clickedLink = $(this);
+                let orderOfAddress = clickedLink.attr("order");
+                let message = "Are you sure to delete address #" + orderOfAddress;
+                let copyLink = clickedLink.attr("href");
+
+                $("#modalContent").text(message);
+                $("#btnYes").attr("href", copyLink);
+                $("#confirmDialog").modal();
+            });
         });
 
-        if(!isSubaddDefault) {
-            primaryAddressCard.addClass("bg-warning");
+        let hightlightDefaultAddress = () => {
+            let isSubaddDefault = false;
+            let primaryAddressCard = $("#primaryAdd");
+
+            $(".sub-add").each(function() {
+                let subAdd = $(this);
+                if(subAdd.hasClass("bg-warning")) {
+                    isSubaddDefault = true;
+                }
+            });
+
+            if(!isSubaddDefault) {
+                primaryAddressCard.addClass("bg-warning");
+            }
         }
-    }
-    hightlightDefaultAddress();
+        hightlightDefaultAddress();
     </script>
 </body>
 </html>
