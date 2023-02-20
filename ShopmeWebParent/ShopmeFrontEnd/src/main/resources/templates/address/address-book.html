@@ -32,6 +32,9 @@
                             <div class="row">
                                 <div class="col-9">
                                     <span class="font-weight-bold">Your Primary Address</span>
+                                    <a class="text-primary" th:id="linkSetDefaultForPrimary"
+                                       th:href="@{/address-book/set-default/0}" hidden="hidden">[Set as Default Address]</a>
+                                    <span class="text-danger" th:id="defaultMessageForPrimary" hidden="hidden">[Default Address]</span>
                                 </div>
                                 <div class="col-3">
                                     <a class="font-weight-bold text-primary">EDIT</a>
@@ -51,6 +54,10 @@
                                 <div class="row">
                                     <div class="col-9">
                                         <span class="font-weight-bold">Sub-address #[[${status.count + 1}]]</span>
+                                        <a class="text-primary"
+                                           th:href="@{'/address-book/set-default/' + ${address.id}}"
+                                           th:if="${!address.defaultForShipping}">[Set as Default Address]</a>
+                                        <span class="text-danger" th:if="${address.defaultForShipping}">[Default Address]</span>
                                     </div>
                                     <div class="col-3 row">
                                         <a class="col font-weight-bold text-primary" th:href="@{'/address-book/edit/' + ${address.id}}">EDIT</a>
@@ -87,24 +94,31 @@
                 $("#btnYes").attr("href", copyLink);
                 $("#confirmDialog").modal();
             });
+
+            hightlightDefaultAddress();
         });
 
         let hightlightDefaultAddress = () => {
             let isSubaddDefault = false;
             let primaryAddressCard = $("#primaryAdd");
+            let linkSetDefaultForPrimary = $("#linkSetDefaultForPrimary");
+            let defaultMessageForPrimary = $("#defaultMessageForPrimary");
 
             $(".sub-add").each(function() {
                 let subAdd = $(this);
                 if(subAdd.hasClass("bg-warning")) {
                     isSubaddDefault = true;
+                    linkSetDefaultForPrimary.prop("hidden", false);
+                    defaultMessageForPrimary.prop("hidden", true);
                 }
             });
 
             if(!isSubaddDefault) {
                 primaryAddressCard.addClass("bg-warning");
+                linkSetDefaultForPrimary.prop("hidden", true);
+                defaultMessageForPrimary.prop("hidden", false);
             }
         }
-        hightlightDefaultAddress();
     </script>
 </body>
 </html>

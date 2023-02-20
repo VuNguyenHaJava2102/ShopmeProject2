@@ -103,4 +103,14 @@ public class AddressController {
         }
         return "redirect:/address-book";
     }
+
+    @GetMapping("/address-book/set-default/{id}")
+    public String setDefaultAddress(@PathVariable("id") int addressId,
+                                    @AuthenticationPrincipal CustomerUserDetails customerUserDetails,
+                                    RedirectAttributes redirectAttributes) {
+        Customer loggedCustomer = customerUserDetails.getCustomer();
+        addressService.setDefaultAddressForAnAddress(addressId, loggedCustomer.getId());
+        redirectAttributes.addFlashAttribute("message", "Change default address successfully!");
+        return "redirect:/address-book";
+    }
 }

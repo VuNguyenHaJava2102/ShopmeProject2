@@ -41,7 +41,6 @@ public class ShippingRateController {
         Page<ShippingRate> shippingRatePage = shippingRateService.getAllByPage(sortField, sortDir, keyword, pageNum);
 
         List<ShippingRate> shippingRateList = shippingRatePage.getContent();
-
         long totalElements = shippingRatePage.getTotalElements();
         long totalPages = shippingRatePage.getTotalPages();
 

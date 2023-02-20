@@ -8,6 +8,7 @@ import com.shopme.setting.CountryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +47,15 @@ public class AddressService {
     public void deleteAddressById(int id) throws AddressNotFoundException {
         Address address = getAddressById(id);
         addressRepository.delete(address);
+    }
+
+    // 5
+    @Transactional
+    public void setDefaultAddressForAnAddress(int addressId,
+                                              int customerId) {
+        if(addressId > 0) {
+            addressRepository.setDefaultForAnAddress(addressId);
+        }
+        addressRepository.setNonDefaultForRestAddresses(addressId, customerId);
     }
 }
