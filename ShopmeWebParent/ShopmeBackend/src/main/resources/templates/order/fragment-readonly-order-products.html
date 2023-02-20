@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .product-img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <th:block th:each="orderDetail, status : ${order.orderDetails}">
+            <div class="border border-secondary rounded p-3 mb-2 row" th:with="product = ${orderDetail.product}">
+                <div class="col-1">
+                    <span>[[${status.count}]]</span>
+                </div>
+                <div class="col-3">
+                    <img class="product-img" th:src="@{${product.getMainImagePath}}">
+                </div>
+                <div class="col-8">
+                    <b>[[${product.name}]]</b>
+                    <div>
+                        <label>Product Cost:</label>
+                        <span th:replace="/order/fragment-currency-span :: content(${product.cost})"></span>
+                    </div>
+                    <div>
+                        <label>Subtotal:</label>
+                        <span>[[${orderDetail.quantity}]]</span>
+                        X
+                        <span th:replace="/order/fragment-currency-span :: content(${product.price})"></span>
+                        =
+                        <span th:replace="/order/fragment-currency-span :: content(${orderDetail.subtotal})"></span>
+                    </div>
+                    <div>
+                        <label>Shipping Cost:</label>
+                        <span th:replace="/order/fragment-currency-span :: content(${orderDetail.shippingCost})"></span>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</body>
+</html>

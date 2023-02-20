@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Days to deliver:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.daysToDeliver}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Expected Delivery Date:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${#dates.format(order.deliveryDay, 'dd/MM/yyyy HH:mm:ss')}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">First Name:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.firstName}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Last Name:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.lastName}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Phone Number:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.phoneNumber}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Address Line 1:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.addressLine1}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Address Line 1:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.addressLine2}" readonly>
+            </div>
+        </div>
+
+        <!--        -->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Payment Method:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.paymentMethod}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">City:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.city}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">State:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.state}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Country:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.country}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Postal Code:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.postalCode}" readonly>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
