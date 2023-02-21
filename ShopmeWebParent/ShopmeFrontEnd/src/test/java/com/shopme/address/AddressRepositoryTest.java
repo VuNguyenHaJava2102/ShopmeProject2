@@ -62,4 +62,16 @@ public class AddressRepositoryTest {
         List<Address> addressList = addressRepository.findByCustomer(customer);
         System.err.println(addressList.size());
     }
+
+    @Test
+    public void testfindDefaultAddressOfCustomer() {
+        Address address = addressRepository.findDefaultAddressOfCustomer(5);
+        System.err.println(address.getAddressLine1());
+    }
+
+    @Test
+    public void test() {
+        Address address = entityManager.find(Address.class, 3);
+        System.err.println(address.getState().isBlank());
+    }
 }

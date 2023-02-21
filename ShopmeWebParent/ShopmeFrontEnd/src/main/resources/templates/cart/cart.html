@@ -31,7 +31,7 @@
                 [[${message}]]
             </div>
 
-            <div class="row" th:if="${#lists.size(cartItems) > 0}">
+            <div class="row" th:unless="${#lists.isEmpty(cartItems)}">
                 <div class="col-8">
                     <th:block th:each="item, status : ${cartItems}" th:with="product = ${item.product}">
                         <div class="row border border-secondary rounded p-3 m-3">
@@ -96,14 +96,21 @@
                     </th:block>
                 </div>
 
-                <div class="col-4" th:unless="${#lists.isEmpty(cartItems)}">
+                <div class="col-4">
                     <h2 class="text-danger">Estimated Total:</h2>
                     <div>
                         <h4 th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">= [[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(estimatedTotal, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</h4>
                         <h4 th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">= [[${#numbers.formatDecimal(estimatedTotal, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</h4>
                     </div>
                     <div>
-                        <button class="btn btn-danger p-2">Checkout</button>
+                        <div th:if="${isShippingSupported}">
+                            <a class="btn btn-danger p-2" th:href="@{/check-out}">Checkout</a>
+                        </div>
+                        <div th:if="${!isShippingSupported}">
+                            <h5 class="text-warning">Your address isn't supported by our shipping service!</h5>
+                            <a th:if="${isPrimaryAddressUsed}" th:href="@{/account/details(redirect=cart)}">Update your account details! (You are using your primary address)</a>
+                            <a th:if="${!isPrimaryAddressUsed}" th:href="@{/address-book(redirect=cart)}">Use another address! (You are using a sub-address)</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -72,9 +72,8 @@ public class Customer {
     @Column(nullable = false, length = 45)
     private String city;
 
-    @NotBlank(message = "State can not be blank!")
-    @Size(min = 3, max = 45, message = "The allowed length is 3-45 characters!")
-    @Column(nullable = false, length = 45)
+    @Size(max = 45, message = "Maximum allowed length is 45 characters!")
+    @Column(length = 45)
     private String state;
 
     @NotBlank(message = "Postal code can not be blank!")

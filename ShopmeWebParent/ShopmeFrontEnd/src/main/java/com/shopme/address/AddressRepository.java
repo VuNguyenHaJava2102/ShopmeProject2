@@ -34,4 +34,9 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
     void setNonDefaultForRestAddresses(@Param("addressId") int addressId,
                                        @Param("customerId") int customerId);
 
+    @Query("""
+            SELECT a FROM Address a
+            WHERE a.customer.id = :customerId AND a.defaultForShipping = true
+            """)
+    Address findDefaultAddressOfCustomer(@Param("customerId") int customerId);
 }

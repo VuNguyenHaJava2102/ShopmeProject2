@@ -47,7 +47,7 @@ public class Address extends IdBasedEntity {
     @Size(max = 64, message = "Maximum allowed length is 64 characters!")
     private String addressLine2;
 
-    @Column(length = 45)
+    @Column(nullable = false, length = 45)
     @Size(max = 45, message = "Maximum allowed length is 45 characters!")
     private String city;
 

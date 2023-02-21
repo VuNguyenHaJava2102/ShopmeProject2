@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -27,13 +28,15 @@ public class AddressController {
 
     @GetMapping("/address-book")
     public String viewAddressBook(Model model,
-                                  @AuthenticationPrincipal CustomerUserDetails customerUserDetails) {
+                                  @AuthenticationPrincipal CustomerUserDetails customerUserDetails,
+                                  @RequestParam(value = "redirect", required = false) String redirect) {
         Customer loggedCustomer = customerUserDetails.getCustomer();
 
         List<Address> addressList = addressService.getAllAddresses(loggedCustomer);
 
         model.addAttribute("addresses", addressList);
         model.addAttribute("customer", loggedCustomer);
+        model.addAttribute("redirect", redirect);
 
         return "address/address-book.html";
     }
@@ -107,10 +110,18 @@ public class AddressController {
     @GetMapping("/address-book/set-default/{id}")
     public String setDefaultAddress(@PathVariable("id") int addressId,
                                     @AuthenticationPrincipal CustomerUserDetails customerUserDetails,
-                                    RedirectAttributes redirectAttributes) {
+                                    RedirectAttributes redirectAttributes,
+                                    @RequestParam(value = "redirect", required = false) String redirect) {
         Customer loggedCustomer = customerUserDetails.getCustomer();
         addressService.setDefaultAddressForAnAddress(addressId, loggedCustomer.getId());
         redirectAttributes.addFlashAttribute("message", "Change default address successfully!");
-        return "redirect:/address-book";
+
+        String defaultRedirectUrl = "/address-book";
+        if(redirect != null && redirect.equals("cart")) {
+            redirectAttributes.addFlashAttribute("message", "You have just changed your address to receive!");
+            defaultRedirectUrl = "/cart";
+        }
+
+        return "redirect:" + defaultRedirectUrl;
     }
 }

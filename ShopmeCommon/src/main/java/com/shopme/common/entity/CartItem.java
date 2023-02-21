@@ -36,6 +36,9 @@ public class CartItem {
 
     private int quantity;
 
+    @Transient
+    private float shippingCost;
+
     public CartItem(Customer customer, Product product, int quantity) {
         this.customer = customer;
         this.product = product;
