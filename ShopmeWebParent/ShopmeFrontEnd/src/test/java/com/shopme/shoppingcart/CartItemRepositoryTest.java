@@ -61,4 +61,9 @@ public class CartItemRepositoryTest {
     public void testDeleteByCustomerAndProduct() {
         cartItemRepository.deleteByCustomerAndProduct(1, 1);
     }
+
+    @Test
+    public void testDeleteByCustomerId() {
+        cartItemRepository.deleteByCustomerId(1);
+    }
 }

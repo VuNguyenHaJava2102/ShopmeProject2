@@ -120,6 +120,9 @@ public class AddressController {
         if(redirect != null && redirect.equals("cart")) {
             redirectAttributes.addFlashAttribute("message", "You have just changed your address to receive!");
             defaultRedirectUrl = "/cart";
+        } else if(redirect != null && redirect.equals("checkout")) {
+            redirectAttributes.addFlashAttribute("message", "You have just changed your address to receive!");
+            defaultRedirectUrl = "/check-out";
         }
 
         return "redirect:" + defaultRedirectUrl;

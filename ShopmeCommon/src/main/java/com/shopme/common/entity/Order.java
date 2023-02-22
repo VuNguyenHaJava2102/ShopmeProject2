@@ -114,8 +114,25 @@ public class Order {
         setCountry(customer.getCountry().getName());
     }
 
+    public void copyAddressFromAddress(Address address) {
+        setFirstName(address.getFirstName());
+        setLastName(address.getLastName());
+        setPhoneNumber(address.getPhoneNumber());
+        setAddressLine1(address.getAddressLine1());
+        setAddressLine2(address.getAddressLine2());
+        setCity(address.getCity());
+        setState(address.getState());
+        setPostalCode(address.getPostalCode());
+        setCountry(address.getCountry().getName());
+    }
+
     @Transient
     public String getDestination() {
-        return city + (state.equals(city) ? "" : ", " + state) + ", " + country;
+        String destination = city;
+        if(!state.isBlank()) {
+            destination += ", " + state;
+        }
+        destination += ", " + country;
+        return destination;
     }
 }

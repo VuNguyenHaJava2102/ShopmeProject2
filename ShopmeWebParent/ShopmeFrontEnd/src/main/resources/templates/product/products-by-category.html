@@ -86,8 +86,10 @@
                         </div>
                         <div>
                             <div th:if="${product.discountPercent == 0}">
-                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}" style="color: darkcyan">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
-                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}" style="color: darkcyan">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}"
+                                      style="color: darkcyan">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}"
+                                      style="color: darkcyan">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
                             </div>
                             <div th:if="${product.discountPercent > 0}">
                                 <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}"

@@ -28,7 +28,7 @@
                         <label>Subtotal:</label>
                         <span>[[${orderDetail.quantity}]]</span>
                         X
-                        <span th:replace="/order/fragment-currency-span :: content(${product.price})"></span>
+                        <span th:replace="/order/fragment-currency-span :: content(${product.getDiscountPrice})"></span>
                         =
                         <span th:replace="/order/fragment-currency-span :: content(${orderDetail.subtotal})"></span>
                     </div>

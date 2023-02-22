@@ -25,7 +25,9 @@
         <div th:replace="fragments :: secondary_menu()"></div>
 
         <div>
-            <h2>Your Cart</h2>
+            <div class="text-center my-2">
+                <h2>Your Cart</h2>
+            </div>
 
             <div th:if="${message != null}" class="text-center alert alert-success">
                 [[${message}]]

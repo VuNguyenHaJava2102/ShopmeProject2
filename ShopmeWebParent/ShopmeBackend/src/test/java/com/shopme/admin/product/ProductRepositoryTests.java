@@ -11,9 +11,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
+import java.util.List;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Rollback(value = false)
 public class ProductRepositoryTests {
 
     @Autowired
@@ -65,5 +67,22 @@ public class ProductRepositoryTests {
 
         productRepository.save(product);
     }
+
+//    @Test
+//    public void testUpdateProductCost() {
+//        List<Product> productList = productRepository.findAllCost();
+//        for(Product product : productList) {
+//            float price = product.getPrice();
+//            float cost = price * 0.75f;
+//
+//            cost = Math.round(cost * 100) / 100;
+//            product.setCost(cost);
+//            product.setLength(1);
+//            product.setWeight(1);
+//            product.setHeight(1);
+//            product.setWidth(1);
+//        }
+//        productRepository.saveAll(productList);
+//    }
 
 }

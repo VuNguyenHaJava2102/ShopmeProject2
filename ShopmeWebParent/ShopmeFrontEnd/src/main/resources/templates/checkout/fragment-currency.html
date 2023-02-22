@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content(label, amount)" th:remove="tag">
+        <b>[[${label}]]: </b>
+        <span>&nbsp;&nbsp;&nbsp;</span>
+        <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(amount, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+        <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">[[${#numbers.formatDecimal(amount, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+    </div>
+</body>
+</html>

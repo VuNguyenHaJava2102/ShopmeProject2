@@ -88,7 +88,7 @@
                         <del th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</del>
                         <del th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">[[${#numbers.formatDecimal(product.price, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</del>
 
-                        <span>(sale off [[${#numbers.formatDecimal(product.getDiscountPrice, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]%)</span>
+                        <span>(sale off [[${#numbers.formatDecimal(product.getDiscountPercent, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]%)</span>
                     </div>
                 </div>
                 <div th:utext="${product.shortDescription}"></div>

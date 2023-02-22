@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${SITE_NAME}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+    <style>
+        .category-img {
+            height: 120px;
+            width: 120px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments ::header_menu()"></div>
+        <div th:replace="fragments ::secondary_menu()"></div>
+
+        <div>
+            <div class="text-center my-2">
+                <h2>Check out</h2>
+            </div>
+
+            <div class="text-center alert alert-success" th:if="${message != null}">
+                [[${message}]]
+            </div>
+
+            <div class="row">
+                <div class="col-8">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5>Shipping Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <b>Ship to:</b>
+                                <span>[[${address}]]</span>
+                                <a th:href="@{/address-book(redirect=checkout)}">[Change shipping address]</a>
+                            </div>
+                            <div>
+                                <b>Days to Deliver:</b>
+                                <span>[[${checkoutInfo.daysToDeliver}]] day(s)</span>
+                            </div>
+                            <div>
+                                <b>Delivery date:</b>
+                                <span th:text="${#dates.format(checkoutInfo.deliveryDate, 'dd/MM/yyyy')}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Payment Method</h5>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${checkoutInfo.codSupported}">
+                                <form th:action="@{/place-order-cod}" method="get">
+                                    <input th:id="radioBtnCod" type="radio"> Cash on Delivery
+                                    <button class="btn btn-primary ml-3 btn-place-cod" type="submit" hidden="hidden">Place Order with COD</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Order Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <th:block th:each="item : ${cartItems}">
+                                <div class="row mb-2" th:with="product = ${item.product}">
+                                    <div class="col-1">
+                                        [[${item.quantity}]]
+                                    </div>
+                                    <div class="col-1">
+                                        X
+                                    </div>
+                                    <div class="col-7">
+                                        <a th:href="@{'/p/' + ${product.alias}}" target="_blank">[[${product.name}]]</a>
+                                        <br>
+                                        <div th:replace="/checkout/fragment-currency :: content('Ship', ${item.shippingCost})"></div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div th:replace="/checkout/fragment-currency :: content('', ${product.getDiscountPrice})"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                            </th:block>
+                            <div>
+                                <div th:replace="/checkout/fragment-currency :: content('Product Total', ${checkoutInfo.productPriceTotal})"></div>
+                            </div>
+                            <div>
+                                <div th:replace="/checkout/fragment-currency :: content('Shipping Total', ${checkoutInfo.productShippingCostTotal})"></div>
+                            </div>
+                            <div>
+                                <div th:replace="/checkout/fragment-currency :: content('Payment Total', ${checkoutInfo.paymentTotal})"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments ::footer_menu()"></div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+           $("#radioBtnCod").on("click", function() {
+              $(".btn-place-cod").prop("hidden", false);
+           });
+        });
+    </script>
+</body>
+</html>

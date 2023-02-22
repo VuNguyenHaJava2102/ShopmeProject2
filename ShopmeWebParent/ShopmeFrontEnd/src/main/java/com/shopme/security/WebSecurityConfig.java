@@ -18,7 +18,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/cart", "/address-book/**").authenticated();
+        http.authorizeRequests().antMatchers("/cart", "/address-book/**", "/check-out", "/place-order-cod").authenticated();
         http.authorizeRequests().anyRequest().permitAll();
 
         http.formLogin().loginPage("/login").usernameParameter("email").permitAll();

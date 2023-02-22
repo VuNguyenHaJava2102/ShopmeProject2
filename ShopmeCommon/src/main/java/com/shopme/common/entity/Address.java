@@ -99,7 +99,7 @@ public class Address extends IdBasedEntity {
         if(!addressLine2.isBlank()) {
             address += ", Address 2: " + addressLine2;
         }
-        if(!addressLine2.isBlank()) {
+        if(!city.isBlank()) {
             address += ", " + city;
         }
         if(!city.equals(state) && !state.isBlank()) {

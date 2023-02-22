@@ -33,4 +33,6 @@ public interface CartItemRepository extends JpaRepository<CartItem, Integer> {
     @Modifying
     void deleteByCustomerAndProduct(@Param("customerId") int customerId,
                                     @Param("productId") int productId);
+
+    void deleteByCustomerId(int customerId);
 }

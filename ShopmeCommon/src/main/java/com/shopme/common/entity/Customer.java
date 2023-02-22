@@ -108,12 +108,15 @@ public class Customer {
         if(!addressLine2.isBlank()) {
             address += ", Address 2: " + addressLine2;
         }
-        address += ", " + city;
-        if(!city.equals(state)) {
+        if(!city.isBlank()) {
+            address += ", " + city;
+        }
+
+        if(!state.equals(city) && !state.isBlank()) {
             address += ", " + state;
         }
         address += ", " + country.getName();
-        address += ". Postal code: " + postalCode;
+        address += ". Postal code: " + (postalCode.isBlank() ? "Not available" : postalCode);
         address += ". Phone number: " + phoneNumber;
 
         return address;
