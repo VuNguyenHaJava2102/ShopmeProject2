@@ -1,5 +1,6 @@
 package com.shopme.setting;
 
+import com.shopme.common.classes.CurrencySettingBag;
 import com.shopme.common.classes.EmailSettingBag;
 import com.shopme.common.entity.Setting;
 import com.shopme.common.enums.SettingCategory;
@@ -21,6 +22,11 @@ public class SettingService {
     public EmailSettingBag getEmailSettingBag() {
         List<Setting> emailSettings = settingRepository.findByTwoCategories(SettingCategory.MAIL_SERVER, SettingCategory.MAIL_TEMPLATES);
         return new EmailSettingBag(emailSettings);
+    }
+
+    public CurrencySettingBag getCurrencySettingBag() {
+        List<Setting> currencySettings = settingRepository.findByCategory(SettingCategory.CURRENCY);
+        return new CurrencySettingBag(currencySettings);
     }
 
 }

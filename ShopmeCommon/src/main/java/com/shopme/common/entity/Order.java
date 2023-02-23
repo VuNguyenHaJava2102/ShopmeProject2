@@ -22,8 +22,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -102,6 +104,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderDetail> orderDetails = new HashSet<>();
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderTrack> orderTracks = new ArrayList<>();
+
     public void copyAddressFromCustomer(Customer customer) {
         setFirstName(customer.getFirstName());
         setLastName(customer.getLastName());
@@ -124,6 +129,31 @@ public class Order {
         setState(address.getState());
         setPostalCode(address.getPostalCode());
         setCountry(address.getCountry().getName());
+    }
+
+    @Transient
+    public String getAddress() {
+        String address = getFullName() + ", Address 1: " + addressLine1;
+        if(!addressLine2.isBlank()) {
+            address += ", Address 2: " + addressLine2;
+        }
+        if(!city.isBlank()) {
+            address += ", " + city;
+        }
+
+        if(!state.equals(city) && !state.isBlank()) {
+            address += ", " + state;
+        }
+        address += ", " + country;
+        address += ". Postal code: " + (postalCode.isBlank() ? "Not available" : postalCode);
+        address += ". Phone number: " + phoneNumber;
+
+        return address;
+    }
+
+    @Transient
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     @Transient

@@ -1,9 +1,7 @@
 package com.shopme.admin.order;
 
-import com.shopme.admin.shippingrate.ShippingRateService;
 import com.shopme.common.entity.Order;
 import com.shopme.common.entity.Setting;
-import com.shopme.common.entity.ShippingRate;
 import com.shopme.common.exception.OrderNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

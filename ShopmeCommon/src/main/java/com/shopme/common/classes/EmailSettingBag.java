@@ -50,4 +50,12 @@ public class EmailSettingBag extends SettingBag {
         return super.getSettingValueByKey("CUSTOMER_VERIFY_CONTENT");
     }
 
+    public String getOrderConfirmationSubject() {
+        return super.getSettingValueByKey("ORDER_CONFIRMATION_SUBJECT");
+    }
+
+    public String getOrderConfirmationContent() {
+        return super.getSettingValueByKey("ORDER_CONFIRMATION_CONTENT");
+    }
+
 }
