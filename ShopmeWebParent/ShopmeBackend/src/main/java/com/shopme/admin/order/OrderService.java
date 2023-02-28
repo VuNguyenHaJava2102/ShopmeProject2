@@ -1,6 +1,8 @@
 package com.shopme.admin.order;
 
 import com.shopme.admin.setting.SettingRepository;
+import com.shopme.admin.setting.country.CountryRepository;
+import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Order;
 import com.shopme.common.entity.Setting;
 import com.shopme.common.enums.SettingCategory;
@@ -23,11 +25,17 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final SettingRepository settingRepository;
+    private final CountryRepository countryRepository;
 
     // Support service-function
     // 1
     public List<Setting> getAllCurrencySetting() {
         return settingRepository.findByCategory(SettingCategory.CURRENCY);
+    }
+
+    // 2
+    public List<Country> getAllCountries() {
+        return countryRepository.findAllByOrderByName();
     }
 
     // Main service-function

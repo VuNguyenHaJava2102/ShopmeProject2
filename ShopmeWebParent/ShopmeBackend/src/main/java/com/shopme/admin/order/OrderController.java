@@ -1,5 +1,6 @@
 package com.shopme.admin.order;
 
+import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Order;
 import com.shopme.common.entity.Setting;
 import com.shopme.common.exception.OrderNotFoundException;
@@ -82,6 +83,26 @@ public class OrderController {
             return "order/order-details-dialog.html";
         } catch(OrderNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
+            return "redirect:/orders";
+        }
+    }
+
+    // 3
+    @GetMapping("/orders/edit/{id}")
+    public String viewEditOrderForm(@PathVariable("id") int id,
+                                    Model model,
+                                    RedirectAttributes ra) {
+        try {
+            Order order = orderService.getOrderById(id);
+            List<Country> countryList = orderService.getAllCountries();
+
+            model.addAttribute("order", order);
+            model.addAttribute("pageTitle", "Edit Order ID(" + id + ")");
+            model.addAttribute("countries", countryList);
+
+            return "order/order-form.html";
+        } catch(OrderNotFoundException ex) {
+            ra.addFlashAttribute("message", ex.getMessage());
             return "redirect:/orders";
         }
     }

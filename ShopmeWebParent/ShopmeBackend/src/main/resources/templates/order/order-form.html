@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>[[${pageTitle}]]</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <link rel="stylesheet" type="text/css" th:src="@{/u/richtext/richtext.min.css}">
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/u/richtext/jquery.richtext.min.js}"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: navigation()"></div>
+
+        <div class="mb-3">
+            <h2>Order Management | [[${pageTitle}]]</h2>
+        </div>
+
+        <div class="alert alert-warning text-center" th:if="${message != null}">
+            [[${message}]]
+        </div>
+
+        <div>
+            <form class="border border-secondary p-3 rounded" method="post"
+                  th:action="@{/orders/save}" th:object="${order}">
+                <div>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-toggle="tab" data-target="#overview1" type="button" role="tab">Overview</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-toggle="tab" data-target="#products1" type="button" role="tab">Products</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-toggle="tab" data-target="#shipping1" type="button" role="tab">Shipping</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-toggle="tab" data-target="#track1" type="button" role="tab">Track</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active p-3" id="overview1" role="tabpanel">
+                            <div th:replace="/order/fragment-order-overview :: content()"></div>
+                        </div>
+                        <div class="tab-pane p-3" id="products1" role="tabpanel">
+                            <div th:replace="/order/fragment-order-products :: content()"></div>
+                        </div>
+                        <div class="tab-pane p-3" id="shipping1" role="tabpanel">
+                            <div th:replace="/order/fragment-order-shipping :: content()"></div>
+                        </div>
+                        <div class="tab-pane p-3" id="track1" role="tabpanel">
+                            4
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary mr-2" type="submit">Save</button>
+                        <button id="cancelBtn" class="btn btn-secondary" type="button">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div th:replace="fragments :: footer()"></div>
+    </div>
+
+    <!--    PRODUCT DETAILS DIALOG    -->
+    <div class="modal fade" id="productDetailsDialog">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/order/order-form-product.js}"></script>
+    <script type="text/javascript">
+        let contextPath = "[[@{/}]]";
+        let selectorCountry;
+        let dataListState;
+
+        $(document).ready(function() {
+            selectorCountry = $("#country");
+            dataListState = $("#stateList");
+
+            // 1
+            selectorCountry.on("change", function() {
+                $("#state").val("").focus();
+                let selectedCountryOption = $("#country option:selected");
+                let selectedCountryId = selectedCountryOption.attr("countryId");
+                let url = contextPath + "states/get-all/" + selectedCountryId;
+
+                $.get(url, function(responseJson) {
+
+                    dataListState.empty();
+                    $.each(responseJson, function(index, state) {
+                        dataListState.append(`<option value="${state.name}"></option>`);
+                    });
+                });
+            });
+
+            // 2
+            $(".product-details").on("click", function(e) {
+                e.preventDefault();
+
+                let linkAttr = $(this).attr("href");
+                $("#productDetailsDialog").modal("show").find(".modal-content").load(linkAttr);
+            });
+        });
+    </script>
+</body>
+</html>

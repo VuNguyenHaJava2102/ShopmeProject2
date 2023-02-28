@@ -42,6 +42,7 @@ public class CheckoutController {
     private final OrderService orderService;
     private final SettingService settingService;
 
+    // 1
     @GetMapping("/check-out")
     public String viewCheckOutPage(@AuthenticationPrincipal CustomerUserDetails customerUserDetails,
                                    Model model) {
@@ -71,6 +72,7 @@ public class CheckoutController {
         return "checkout/check-out.html";
     }
 
+    // 2
     @GetMapping("/place-order-cod")
     public String placeOrder(@AuthenticationPrincipal CustomerUserDetails customerUserDetails)
             throws MessagingException, UnsupportedEncodingException {
@@ -98,6 +100,7 @@ public class CheckoutController {
         return "checkout/order-completed.html";
     }
 
+    // 2.1
     private void sendConfirmationEmail(Order order)
             throws MessagingException, UnsupportedEncodingException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
