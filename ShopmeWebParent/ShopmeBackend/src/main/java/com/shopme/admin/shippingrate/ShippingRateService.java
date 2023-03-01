@@ -23,13 +23,13 @@ public class ShippingRateService {
     private final ShippingRateRepository shippingRateRepository;
     private final CountryRepository countryRepository;
 
-    // Sub service-function
+    // support
     // 1
     public List<Country> getAllCountriesOrderByName() {
         return countryRepository.findAllByOrderByName();
     }
 
-    // Main service-function
+    // main
     // 1
     public Page<ShippingRate> getAllByPage(String sortField,
                                            String sortDir,

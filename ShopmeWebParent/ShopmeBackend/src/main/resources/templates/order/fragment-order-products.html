@@ -45,7 +45,10 @@
                         </div>
                         <div class="row mb-1">
                             <label class="col-6">Shipping Cost:</label>
-                            <input th:id="${'shipping' + status.count}" class="form-control col-6" th:value="${detail.shippingCost}">
+                            <input th:id="${'unitShip' + status.count}" type="hidden" th:value="${detail.getUnitShipping}">
+                            <input th:id="${'shipping' + status.count}" class="form-control col-6 ship-input"
+                                   type="text" readonly
+                                   th:value="${detail.shippingCost}">
                         </div>
                     </div>
                 </div>

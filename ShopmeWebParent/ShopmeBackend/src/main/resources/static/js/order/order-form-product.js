@@ -61,16 +61,29 @@ let changeSubtotalOverview = () => {
     });
     $("#subtotal").val(subtotalOverview);
     let shipCostTotal = parseFloat($("#shippingCost").val());
-    console.log(shipCostTotal);
     let total = shipCostTotal + subtotalOverview;
-    console.log(total);
     $("#total").val(total);
 }
 
 // 5
 let changeShippingCost = (quantityInput) => {
-    let row = quantityInput.attr("id");
-    let shipInput = $("#shipping" + row);
-    let shipValue = shipInput.val();
+    let newQuantity = quantityInput.val();
+    let row = quantityInput.attr("id").slice(-1);
+    let unitShip = parseFloat($("#unitShip" + row).val());
+    let shipSubtotal = newQuantity * unitShip;
+    $("#shipping" + row).val(shipSubtotal);
+
+    // Change shipping total in overview tab
+    let totalShip = 0.0;
+    $(".ship-input").each(function() {
+        let ship = parseFloat($(this).val());
+        totalShip += ship;
+    });
+
+    // shipping total changes => total changes
+    $("#shippingCost").val(totalShip);
+    let subtotalOverview = parseFloat($("#subtotal").val());
+    let total = totalShip + subtotalOverview;
+    $("#total").val(total);
 }
 
