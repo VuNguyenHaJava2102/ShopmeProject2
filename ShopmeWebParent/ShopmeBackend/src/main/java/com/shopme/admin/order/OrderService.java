@@ -4,7 +4,9 @@ import com.shopme.admin.setting.SettingRepository;
 import com.shopme.admin.setting.country.CountryRepository;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Order;
+import com.shopme.common.entity.OrderTrack;
 import com.shopme.common.entity.Setting;
+import com.shopme.common.enums.OrderStatus;
 import com.shopme.common.enums.SettingCategory;
 import com.shopme.common.exception.OrderNotFoundException;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +30,7 @@ public class OrderService {
     private final SettingRepository settingRepository;
     private final CountryRepository countryRepository;
 
-    // Support service-function
+    // support service-function
     // 1
     public List<Setting> getAllCurrencySetting() {
         return settingRepository.findByCategory(SettingCategory.CURRENCY);
@@ -38,7 +41,7 @@ public class OrderService {
         return countryRepository.findAllByOrderByName();
     }
 
-    // Main service-function
+    // main service-function
     // 1
     public Page<Order> getOrdersByKeywordAndPage(String sortField,
                                                  String sortDir,
@@ -60,6 +63,11 @@ public class OrderService {
 
         if(keyword.equals("")) {
             return orderRepository.findAll(pageable);
+        } else if(keyword.startsWith("for-shipper")){
+            if(keyword.contains("#")) {
+                return orderRepository.searchForShipperById(Integer.valueOf(keyword.substring(12)), pageable);
+            }
+            return orderRepository.searchForShipperByName(keyword.substring(11), pageable);
         }
         return orderRepository.findByKeywordAndPage(keyword, pageable);
     }
@@ -71,6 +79,29 @@ public class OrderService {
             throw new OrderNotFoundException("Could not find any orders with ID " + id);
         }
         return orderOptional.get();
+    }
+
+    // 3
+    public void updateOrderStatus(int orderId, String status) {
+        /*
+        - Hóa đơn có nhiều trạng thái theo thời gian khác nhau
+        - Vì vậy trạng thái hiện tại ở hóa đơn sẽ là trạng thái của OrderTrack gần nhất
+        */
+        Order orderInDB = orderRepository.findById(orderId).get();
+        OrderStatus statusToUpdate = OrderStatus.valueOf(status);
+
+        if(!orderInDB.hasStatus(statusToUpdate)) {
+            OrderTrack newTrack = new OrderTrack();
+
+            newTrack.setNote(statusToUpdate.getDefaultDescription());
+            newTrack.setUpdatedTime(new Date());
+            newTrack.setStatus(statusToUpdate);
+            newTrack.setOrder(orderInDB);
+
+            orderInDB.getOrderTracks().add(newTrack);
+            orderInDB.setStatus(statusToUpdate);
+            orderRepository.save(orderInDB);
+        }
     }
 
 }

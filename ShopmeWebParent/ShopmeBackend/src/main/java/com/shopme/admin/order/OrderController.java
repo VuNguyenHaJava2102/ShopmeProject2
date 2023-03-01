@@ -1,11 +1,13 @@
 package com.shopme.admin.order;
 
+import com.shopme.admin.security.ShopmeUserDetails;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Order;
 import com.shopme.common.entity.Setting;
 import com.shopme.common.exception.OrderNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +25,9 @@ public class OrderController {
 
     // 1
     @GetMapping("/orders")
-    public String viewFirstOrderPage(Model model) {
-        return viewOrderByPage("orderTime", "asc", " ", 1, model);
+    public String viewFirstOrderPage() {
+        return "redirect:/orders/page/1?sortField=orderTime&sortDir=asc&keyword=";
+//        return viewOrderByPage("orderTime", "asc", " ", 1, model);
     }
 
     // 1.1
@@ -33,8 +36,18 @@ public class OrderController {
                                   @RequestParam("sortDir") String sortDir,
                                   @RequestParam("keyword") String keyword,
                                   @PathVariable("pageNum") int pageNum,
-                                  Model model) {
-        Page<Order> orderPage = orderService.getOrdersByKeywordAndPage(sortField, sortDir, keyword, pageNum);
+                                  Model model,
+                                  @AuthenticationPrincipal ShopmeUserDetails loggedUser) {
+        String rolesString = loggedUser.getAuthorities().toString();
+        boolean isShipper = rolesString.contains("Shipper") && !rolesString.contains("Admin") && !rolesString.contains("Salesperson");
+        Page<Order> orderPage = null;
+
+        if(isShipper) {
+            orderPage = orderService.getOrdersByKeywordAndPage(sortField, sortDir, "for-shipper".concat(keyword), pageNum);
+        } else {
+            orderPage = orderService.getOrdersByKeywordAndPage(sortField, sortDir, keyword, pageNum);
+        }
+
         List<Order> orderList = orderPage.getContent();
         List<Setting> currencySettingList = orderService.getAllCurrencySetting();
 
@@ -63,6 +76,10 @@ public class OrderController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("reversedSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
+
+        if(isShipper) {
+            return "order/orders-for-shipper.html";
+        }
         return "order/orders.html";
     }
 
@@ -70,7 +87,11 @@ public class OrderController {
     @GetMapping("/orders/details/{id}")
     public String viewDetailOrder(@PathVariable("id") int id,
                                   RedirectAttributes redirectAttributes,
-                                  Model model) {
+                                  Model model,
+                                  @AuthenticationPrincipal ShopmeUserDetails loggedUser) {
+        String rolesString = loggedUser.getAuthorities().toString();
+        boolean isShipper = rolesString.contains("Shipper") && !rolesString.contains("Admin") && !rolesString.contains("Salesperson");
+
         try {
             Order order = orderService.getOrderById(id);
             List<Setting> currencySettingList = orderService.getAllCurrencySetting();
@@ -80,6 +101,9 @@ public class OrderController {
                 model.addAttribute(setting.getKey(), setting.getValue());
             }
 
+            if(isShipper) {
+                return "order/order-details-dialog-for-shipper.html";
+            }
             return "order/order-details-dialog.html";
         } catch(OrderNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());

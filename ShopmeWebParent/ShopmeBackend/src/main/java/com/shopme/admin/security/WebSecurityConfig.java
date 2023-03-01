@@ -31,6 +31,8 @@ public class WebSecurityConfig {
         http.authorizeRequests().antMatchers("/products/edit/**", "/products/save").hasAnyAuthority("Admin", "Editor", "Salesperson");
         http.authorizeRequests().antMatchers("/products/**").hasAnyAuthority("Admin", "Editor");
         http.authorizeRequests().antMatchers("/shipping-rates/**").hasAnyAuthority("Admin", "Salesperson");
+        http.authorizeRequests().antMatchers("/orders", "/orders/page/**", "/orders/details/**").hasAnyAuthority("Admin", "Salesperson", "Shipper");
+        http.authorizeRequests().antMatchers("/orders-shipper/**").hasAuthority("Shipper");
         http.authorizeRequests().antMatchers("/orders/**").hasAnyAuthority("Admin", "Salesperson");
         http.authorizeRequests().anyRequest().authenticated();
 

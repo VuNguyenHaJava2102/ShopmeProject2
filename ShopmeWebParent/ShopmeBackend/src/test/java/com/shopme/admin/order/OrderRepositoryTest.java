@@ -60,4 +60,9 @@ public class OrderRepositoryTest {
 
         orderRepository.save(mainOrder);
     }
+
+    @Test
+    public void testSearchOrder() {
+//        String str =
+    }
 }

@@ -17,4 +17,17 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findByKeywordAndPage(@Param("keyword") String keyword,
                                      Pageable pageable);
 
+    @Query("""
+            SELECT o FROM Order o
+            WHERE o.id = :id
+            """)
+    Page<Order> searchForShipperById(@Param("id") int id,
+                                     Pageable pageable);
+
+    @Query("""
+            SELECT o FROM Order o
+            WHERE CONCAT(o.firstName, ' ', o.lastName) LIKE %:keyword%
+            """)
+    Page<Order> searchForShipperByName(@Param("keyword") String keyword,
+                                       Pageable pageable);
 }

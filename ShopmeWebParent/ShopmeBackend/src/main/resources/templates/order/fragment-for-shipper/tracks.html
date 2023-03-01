@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <table class="table table-responsive-xl table-hover table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="track : ${order.orderTracks}">
+                <tr>
+                    <td>
+                        <span th:text="${#dates.format(track.updatedTime, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                    </td>
+                    <td>
+                        [[${track.status}]]
+                    </td>
+                    <td>
+                        <i>[[${track.note}]]</i>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -174,4 +174,57 @@ public class Order {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(deliveryDay);
     }
+
+    @Transient
+    public String getRecipientAddress() {
+        String address = addressLine1;
+        if(!addressLine2.isBlank()) {
+            address += ", Address 2: " + addressLine2;
+        }
+        if(!city.isBlank()) {
+            address += ", " + city;
+        }
+
+        if(!state.equals(city) && !state.isBlank()) {
+            address += ", " + state;
+        }
+        address += ", " + country;
+        address += ". Postal code: " + (postalCode.isBlank() ? "Not available" : postalCode);
+
+        return address;
+    }
+
+    @Transient
+    public boolean isOrderCod() {
+        return paymentMethod.equals(PaymentMethod.COD);
+    }
+
+    @Transient
+    public boolean isPicked() {
+        return hasStatus(OrderStatus.PICKED);
+    }
+
+    @Transient
+    public boolean isShipping() {
+        return hasStatus(OrderStatus.SHIPPING);
+    }
+
+    @Transient
+    public boolean isDelivered() {
+        return hasStatus(OrderStatus.DELIVERED);
+    }
+
+    @Transient
+    public boolean isReturned() {
+        return hasStatus(OrderStatus.RETURNED);
+    }
+
+    public boolean hasStatus(OrderStatus status) {
+        for(OrderTrack track : this.orderTracks) {
+            if(track.getStatus().equals(status)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
