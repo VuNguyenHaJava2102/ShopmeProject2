@@ -71,28 +71,28 @@
                             <div class="row mx-2 mt-3">
                                 <div class="col-3">
                                     <i class="fas fa-people-carry-box fa-2x icon-green" th:if="${order.isPicked}"></i>
-                                    <a class="fas fa-people-carry-box fa-2x icon-silver link-status"
+                                    <a th:id="${'PICKED' + order.id}" class="fas fa-people-carry-box fa-2x icon-silver link-status"
                                        th:href="@{'/orders-shipper/' + ${order.id} + '/update-status/PICKED'}"
                                        th:orderId="${order.id}"
                                        th:if="${!order.isPicked}"></a>
                                 </div>
                                 <div class="col-3">
                                     <i class="fas fa-shipping-fast fa-2x icon-green" th:if="${order.isShipping}"></i>
-                                    <a class="fas fa-shipping-fast fa-2x icon-silver link-status"
+                                    <a th:id="${'SHIPPING' + order.id}" class="fas fa-shipping-fast fa-2x icon-silver link-status"
                                        th:href="@{'/orders-shipper/' + ${order.id} + '/update-status/SHIPPING'}"
                                        th:orderId="${order.id}"
                                        th:if="${!order.isShipping}"></a>
                                 </div>
                                 <div class="col-3">
                                     <i class="fas fa-box-open fa-2x icon-green" th:if="${order.isDelivered}"></i>
-                                    <a class="fas fa-box-open fa-2x icon-silver link-status"
+                                    <a th:id="${'DELIVERED' + order.id}" class="fas fa-box-open fa-2x icon-silver link-status"
                                        th:href="@{'/orders-shipper/' + ${order.id} + '/update-status/DELIVERED'}"
                                        th:orderId="${order.id}"
                                        th:if="${!order.isDelivered}"></a>
                                 </div>
                                 <div class="col-3">
                                     <i class="fas fa-undo fa-2x icon-green" th:if="${order.isReturned}"></i>
-                                    <a class="fas fa-undo fa-2x icon-silver link-status"
+                                    <a th:id="${'RETURNED' + order.id}" class="fas fa-undo fa-2x icon-silver link-status"
                                        th:href="@{'/orders-shipper/' + ${order.id} + '/update-status/RETURNED'}"
                                        th:orderId="${order.id}"
                                        th:if="${!order.isReturned}"></a>
@@ -160,14 +160,8 @@
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/order/orders-for-shipper.js}"></script>
     <script type="text/javascript">
-        // let csrfHeaderName = "[[${_csrf.headerName}]]";
-        // let csrfValue = "[[${_csrf.token}]]";
-        // let sortField1 = "[[${sortField}]]";
-        // let sortDir1 = "[[${sortDir}]]";
-        // let keyword1 = "[[${keyword}]]";
-        // let page1 = "[[${currentPage}]]";
-        //
-        // let currentUrl = "[[@{/}]]" + "orders/page/" + page1 + "?sortField=" + sortField1 + "&sortDir=" + sortDir1 + "&keyword=" + keyword1;
+        let csrfHeaderName = "[[${_csrf.headerName}]]";
+        let csrfValue = "[[${_csrf.token}]]";
 
         $(document).ready(function() {
             // Event
