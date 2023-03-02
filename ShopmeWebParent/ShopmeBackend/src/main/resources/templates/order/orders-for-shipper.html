@@ -160,19 +160,14 @@
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/order/orders-for-shipper.js}"></script>
     <script type="text/javascript">
-        let csrfHeaderName = "[[${_csrf.headerName}]]";
-        let csrfValue = "[[${_csrf.token}]]";
-        let sortField1 = "[[${sortField}]]";
-        let sortDir1 = "[[${sortDir}]]";
-        let keyword1 = "[[${keyword}]]";
-        let page1 = "[[${currentPage}]]";
-
-        let currentUrl = "[[@{/}]]" + "orders/page/" + page1 + "?sortField=" + sortField1 + "&sortDir=" + sortDir1 + "&keyword=" + keyword1;
-        console.log(sortField1);
-        console.log(sortDir1);
-        console.log(keyword1);
-        console.log(page1);
-        console.log(currentUrl);
+        // let csrfHeaderName = "[[${_csrf.headerName}]]";
+        // let csrfValue = "[[${_csrf.token}]]";
+        // let sortField1 = "[[${sortField}]]";
+        // let sortDir1 = "[[${sortDir}]]";
+        // let keyword1 = "[[${keyword}]]";
+        // let page1 = "[[${currentPage}]]";
+        //
+        // let currentUrl = "[[@{/}]]" + "orders/page/" + page1 + "?sortField=" + sortField1 + "&sortDir=" + sortDir1 + "&keyword=" + keyword1;
 
         $(document).ready(function() {
             // Event
