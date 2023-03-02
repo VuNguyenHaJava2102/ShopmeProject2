@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "order_tracks")
+@Table(name = "order_track")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -25,7 +25,7 @@ import java.util.Date;
 public class OrderTrack extends IdBasedEntity {
 
     @Column(length = 300)
-    private String note;
+    private String notes;
 
     private Date updatedTime;
 

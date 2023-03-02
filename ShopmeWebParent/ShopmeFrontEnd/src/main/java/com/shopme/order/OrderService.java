@@ -77,6 +77,14 @@ public class OrderService {
             orderDetailSet.add(orderDetail);
         }
         newOrder.setOrderDetails(orderDetailSet);
+
+        OrderTrack newTrack = new OrderTrack();
+        newTrack.setNotes(OrderStatus.NEW.getDefaultDescription());
+        newTrack.setUpdatedTime(new Date());
+        newTrack.setStatus(OrderStatus.NEW);
+        newTrack.setOrder(newOrder);
+
+        newOrder.getOrderTracks().add(newTrack);
         return orderRepository.save(newOrder);
     }
 
@@ -117,13 +125,13 @@ public class OrderService {
         if(!returnRequest.getNote().equals("")) {
             note += ". ".concat(returnRequest.getNote());
         }
-        orderTrack.setNote(note);
+        orderTrack.setNotes(note);
         orderTrack.setUpdatedTime(new Date());
-        orderTrack.setStatus(OrderStatus.RETURNED_REQUESTED);
+        orderTrack.setStatus(OrderStatus.RETURN_REQUESTED);
         orderTrack.setOrder(order);
 
         order.getOrderTracks().add(orderTrack);
-        order.setStatus(OrderStatus.RETURNED_REQUESTED);
+        order.setStatus(OrderStatus.RETURN_REQUESTED);
         orderRepository.save(order);
     }
 }

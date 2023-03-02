@@ -222,7 +222,7 @@ public class Order {
 
     @Transient
     public boolean isReturnedRequested() {
-        return hasStatus(OrderStatus.RETURNED_REQUESTED);
+        return hasStatus(OrderStatus.RETURN_REQUESTED);
     }
 
     @Transient

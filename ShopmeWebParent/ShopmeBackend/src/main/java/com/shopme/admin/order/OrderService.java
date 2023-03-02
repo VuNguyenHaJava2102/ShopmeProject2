@@ -93,7 +93,7 @@ public class OrderService {
         if(!orderInDB.hasStatus(statusToUpdate)) {
             OrderTrack newTrack = new OrderTrack();
 
-            newTrack.setNote(statusToUpdate.getDefaultDescription());
+            newTrack.setNotes(statusToUpdate.getDefaultDescription());
             newTrack.setUpdatedTime(new Date());
             newTrack.setStatus(statusToUpdate);
             newTrack.setOrder(orderInDB);

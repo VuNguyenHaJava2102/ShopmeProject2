@@ -25,7 +25,7 @@ public class OrderTrackRepositoryTest {
 
         OrderTrack track = new OrderTrack();
         track.setStatus(OrderStatus.PACKAGED);
-        track.setNote(track.getStatus().getDefaultDescription());
+        track.setNotes(track.getStatus().getDefaultDescription());
         track.setUpdatedTime(new Date());
         track.setOrder(order);
 

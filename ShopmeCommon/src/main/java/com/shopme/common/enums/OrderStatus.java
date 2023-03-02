@@ -44,7 +44,7 @@ public enum OrderStatus {
             return "Customer received the products";
         }
     },
-    RETURNED_REQUESTED {
+    RETURN_REQUESTED {
         @Override
         public String getDefaultDescription() {
             return "Order were requested to return";
