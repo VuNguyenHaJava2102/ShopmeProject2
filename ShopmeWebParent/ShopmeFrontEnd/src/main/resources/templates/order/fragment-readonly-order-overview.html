@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="content()" th:remove="tag">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Order ID:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.id}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Subtotal:</label>
+            <div class="col-sm-10">
+                <div th:replace="/order/fragment-currency-input :: content(${order.subtotal})"></div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Shipping Cost:</label>
+            <div class="col-sm-10">
+                <div th:replace="/order/fragment-currency-input :: content(${order.shippingCost})"></div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tax:</label>
+            <div class="col-sm-10">
+                <div th:replace="/order/fragment-currency-input :: content(${order.tax})"></div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Total:</label>
+            <div class="col-sm-10">
+                <div th:replace="/order/fragment-currency-input :: content(${order.total})"></div>
+                <br>
+                <span>TOTAL = subtotal + shipping cost + tax</span>
+            </div>
+        </div>
+
+        <!--        -->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Payment Method:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.paymentMethod}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Status:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${order.status}" readonly>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Order Time:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" th:value="${#dates.format(order.orderTime, 'dd/MM/yyyy HH:mm:ss')}" readonly>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

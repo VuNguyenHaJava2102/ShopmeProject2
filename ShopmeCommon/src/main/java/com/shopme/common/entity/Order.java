@@ -104,6 +104,7 @@ public class Order {
     private Customer customer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OrderBy("quantity")
     private Set<OrderDetail> orderDetails = new HashSet<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
@@ -200,6 +201,11 @@ public class Order {
     }
 
     @Transient
+    public boolean isProcessing() {
+        return hasStatus(OrderStatus.PROCESSING);
+    }
+
+    @Transient
     public boolean isPicked() {
         return hasStatus(OrderStatus.PICKED);
     }
@@ -212,6 +218,11 @@ public class Order {
     @Transient
     public boolean isDelivered() {
         return hasStatus(OrderStatus.DELIVERED);
+    }
+
+    @Transient
+    public boolean isReturnedRequested() {
+        return hasStatus(OrderStatus.RETURNED_REQUESTED);
     }
 
     @Transient

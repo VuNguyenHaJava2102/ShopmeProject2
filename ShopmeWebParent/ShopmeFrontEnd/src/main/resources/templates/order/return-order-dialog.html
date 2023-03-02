@@ -1,0 +1,40 @@
+<div th:fragment="content" id="returnOrderDialog" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="returnOrderDialogTitle">Return Order</h4>
+                <button class="btn-close" type="button" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form onsubmit="return submitReturnOrderForm()">
+                <div class="modal-body">
+                    <span id="returnOrderDialogBody">
+                        <div>
+                            <div>Reason:</div>
+                            <div>
+                                <input type="radio" name="reason" value="I bought wrong items"> I bought wrong items.
+                            </div>
+                            <div>
+                                <input type="radio" name="reason" value="I received wrong items" required> I received wrong items.
+                            </div>
+                            <div>
+                                <input type="radio" name="reason" value="Products were damaged/defective"> Products were damaged/defective.
+                            </div>
+                            <div>
+                                <input type="radio" name="reason" value="Shipping was to late"> Shipping was to late.
+                            </div>
+                            <div class="mt-2">
+                                <textarea id="noteTextarea" class="form-control" rows="4" maxlength="120px" placeholder="Additional information..."></textarea>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="firstBtn" class="btn btn-success" type="submit">Send Request</button>
+                    <button id="secondBtn" class="btn btn-danger" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+
+    <title>My Orders</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.6.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div th:replace="fragments :: header_menu()"></div>
+        <div th:replace="fragments :: secondary_menu()"></div>
+
+        <div class="mb-2 text-center">
+            <h2>My Orders</h2>
+        </div>
+
+        <!--    SEARCH FORM    -->
+        <div class="mb-2">
+            <form class="form-inline" th:action="@{'/orders/page/1'}">
+                <input type="hidden" name="sortField" th:value="${sortField}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                <input class="form-control mr-1" type="search" name="orderKeyword" th:value="${orderKeyword}" placeholder="Search order...">
+
+                <button class="btn btn-primary mr-1" type="submit">Search</button>
+                <button class="btn btn-secondary btn-clear" type="button">Clear</button>
+            </form>
+        </div>
+
+        <!--    ORDER TABLE    -->
+        <div>
+            <table class="table table-responsive-xl table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'id'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=id&sortDir=asc&orderKeyword=' + ${orderKeyword}}">ID</a>
+                            <a class="text-white" th:if="${sortField == 'id'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reversedSortDir} + '&orderKeyword=' + ${orderKeyword}}">ID</a>
+                            <span th:if="${sortField == 'id'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'orderTime'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=orderTime&sortDir=asc&orderKeyword=' + ${orderKeyword}}">Ordet Time</a>
+                            <a class="text-white" th:if="${sortField == 'orderTime'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=orderTime&sortDir=' + ${reversedSortDir} + '&orderKeyword=' + ${orderKeyword}}">Ordet Time</a>
+                            <span th:if="${sortField == 'orderTime'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+
+                        <th width="50%">Products</th>
+
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'total'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=total&sortDir=asc&orderKeyword=' + ${orderKeyword}}">Total</a>
+                            <a class="text-white" th:if="${sortField == 'total'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=total&sortDir=' + ${reversedSortDir} + '&orderKeyword=' + ${orderKeyword}}">Total</a>
+                            <span th:if="${sortField == 'total'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+
+                        <th>
+                            <a class="text-white" th:if="${sortField != 'status'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=status&sortDir=asc&orderKeyword=' + ${orderKeyword}}">Status</a>
+                            <a class="text-white" th:if="${sortField == 'status'}" th:href="@{'/orders/page/' + ${currentPage} + '?sortField=status&sortDir=' + ${reversedSortDir} + '&orderKeyword=' + ${orderKeyword}}">Status</a>
+                            <span th:if="${sortField == 'status'}">
+                                <i class="fas fa-sort-up" th:if="${sortDir == 'asc'}"></i>
+                                <i class="fas fa-sort-down" th:if="${sortDir == 'desc'}"></i>
+                            </span>
+                        </th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="order : ${orders}">
+                        <tr>
+                            <td>[[${order.id}]]</td>
+                            <td>
+                                <span th:text="${#dates.format(order.orderTime, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                            </td>
+                            <td>
+                                <ul>
+                                <th:block th:each="detail : ${order.orderDetails}">
+                                    <li>[[${detail.product.name}]]</li>
+                                </th:block>
+                                </ul>
+                            </td>
+                            <td>
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'BEFORE'}">[[${CURRENCY_SYMBOL}]] [[${#numbers.formatDecimal(order.total, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                <span th:if="${CURRENCY_SYMBOL_POSITION == 'AFTER'}">[[${#numbers.formatDecimal(order.total, 1, THOUSAND_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]] [[${CURRENCY_SYMBOL}]]</span>
+                            </td>
+                            <td>
+                                <span th:id="${'status' + order.id}">[[${order.status}]]</span>
+                            </td>
+                            <td>
+                                <a class="fas fa-file-alt fa-2x icon-green link-details"
+                                   th:href="@{'/orders/details/' + ${order.id}}"></a>
+                                &nbsp;
+                                <a th:id="${'linkReturn' + order.id}" class="fas fa-undo fa-2x icon-silver link-return"
+                                   th:orderId="${order.id}" th:href="@{/}"
+                                   th:if="${!order.isReturnedRequested && order.isDelivered && !order.isReturned}"></a>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!--    PAGINATION    -->
+        <div class="text-center" th:if="${totalElements > 0}">
+            <p class="font-weight-bold">Showing users #[[${startCount}]] to #[[${endCount}]] of total [[${totalElements}]] orders</p>
+        </div>
+
+        <div class="text-center" th:if="${totalElements == 0}">
+            <p class="font-weight-bold font-italic">Order Not Found</p>
+        </div>
+
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/orders/page/1?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&orderKeyword=' + ${orderKeyword}}">First</a>
+                    </li>
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/orders/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&orderKeyword=' + ${orderKeyword}}">Previous</a>
+                    </li>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+                            <a class="page-link" th:href="@{'/orders/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&orderKeyword=' + ${orderKeyword}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/orders/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&orderKeyword=' + ${orderKeyword}}">Next</a>
+                    </li>
+                    <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" th:href="@{'/orders/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&orderKeyword=' + ${orderKeyword}}">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div th:replace="fragments :: footer_menu()"></div>
+    </div>
+
+    <!--    ORDER DETAILS DIALOG    -->
+    <div class="modal fade" id="orderDetailsDialog">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
+    <!--    RETURN ORDER DIALOG    -->
+    <div th:replace="/order/return-order-dialog :: content()"></div>
+
+    <!--    NOTIFICATION DIALOG    -->
+    <div th:replace="/fragments :: notificationDialog()"></div>
+
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/order/return-order.js}"></script>
+    <script type="text/javascript">
+        let contextPath = "[[@{/}]]";
+        let csrfHeaderName = "[[${_csrf.headerName}]]";
+        let csrfValue = "[[${_csrf.token}]]";
+
+        $(document).ready(function() {
+            // Live function
+            // 1
+            $(".btn-clear").on("click", function() {
+                window.location = "[[@{/orders}]]";
+            })
+
+            // 2
+            $(".link-details").on("click", function(e) {
+                e.preventDefault();
+
+                let linkAttr = $(this).attr("href");
+                $("#orderDetailsDialog").modal("show").find(".modal-content").load(linkAttr);
+            });
+        });
+    </script>
+</body>
+</html>
