@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
+import java.util.List;
+
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("""
@@ -30,4 +33,13 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             """)
     Page<Order> searchForShipperByName(@Param("keyword") String keyword,
                                        Pageable pageable);
+
+    @Query("""
+            SELECT NEW com.shopme.common.entity.Order(o.id, o.orderTime, o.productCost, o.subtotal, o.total)
+            FROM Order o
+            WHERE o.orderTime BETWEEN :startTime AND :endTime
+            ORDER BY o.orderTime
+            """)
+    List<Order> findByOrderTimeBetween(@Param("startTime") Date startTime,
+                                       @Param("endTime") Date endTime);
 }

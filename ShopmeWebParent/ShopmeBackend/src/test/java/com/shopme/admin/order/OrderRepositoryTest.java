@@ -13,7 +13,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -62,7 +66,15 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void testSearchOrder() {
-//        String str =
+    public void testFindByOrderTimeBetween() throws ParseException {
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = dateFormatter.parse("2021-08-01");
+        Date endDate = dateFormatter.parse("2021-08-31");
+
+        List<Order> orderList = orderRepository.findByOrderTimeBetween(startDate, endDate);
+        System.err.println("Result");
+        orderList.forEach(o -> {
+            System.out.printf("%-5s | %s | %-15.2f | %-15.2f | %-15.2f\n", o.getId(), o.getOrderTime(), o.getProductCost(), o.getSubtotal(), o.getTotal());
+        });
     }
 }

@@ -111,30 +111,16 @@ public class Order {
     @OrderBy("updatedTime ASC")
     private List<OrderTrack> orderTracks = new ArrayList<>();
 
-    public void copyAddressFromCustomer(Customer customer) {
-        setFirstName(customer.getFirstName());
-        setLastName(customer.getLastName());
-        setPhoneNumber(customer.getPhoneNumber());
-        setAddressLine1(customer.getAddressLine1());
-        setAddressLine2(customer.getAddressLine2());
-        setCity(customer.getCity());
-        setState(customer.getState());
-        setPostalCode(customer.getPostalCode());
-        setCountry(customer.getCountry().getName());
+    // Constructor
+    public Order(Integer id, Date orderTime, float productCost, float subtotal, float total) {
+        this.id = id;
+        this.orderTime = orderTime;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+        this.total = total;
     }
 
-    public void copyAddressFromAddress(Address address) {
-        setFirstName(address.getFirstName());
-        setLastName(address.getLastName());
-        setPhoneNumber(address.getPhoneNumber());
-        setAddressLine1(address.getAddressLine1());
-        setAddressLine2(address.getAddressLine2());
-        setCity(address.getCity());
-        setState(address.getState());
-        setPostalCode(address.getPostalCode());
-        setCountry(address.getCountry().getName());
-    }
-
+    // Transient
     @Transient
     public String getAddress() {
         String address = getFullName() + ", Address 1: " + addressLine1;
@@ -230,6 +216,7 @@ public class Order {
         return hasStatus(OrderStatus.RETURNED);
     }
 
+    // Utility method
     public boolean hasStatus(OrderStatus status) {
         for(OrderTrack track : this.orderTracks) {
             if(track.getStatus().equals(status)) {
@@ -237,5 +224,29 @@ public class Order {
             }
         }
         return false;
+    }
+
+    public void copyAddressFromCustomer(Customer customer) {
+        setFirstName(customer.getFirstName());
+        setLastName(customer.getLastName());
+        setPhoneNumber(customer.getPhoneNumber());
+        setAddressLine1(customer.getAddressLine1());
+        setAddressLine2(customer.getAddressLine2());
+        setCity(customer.getCity());
+        setState(customer.getState());
+        setPostalCode(customer.getPostalCode());
+        setCountry(customer.getCountry().getName());
+    }
+
+    public void copyAddressFromAddress(Address address) {
+        setFirstName(address.getFirstName());
+        setLastName(address.getLastName());
+        setPhoneNumber(address.getPhoneNumber());
+        setAddressLine1(address.getAddressLine1());
+        setAddressLine2(address.getAddressLine2());
+        setCity(address.getCity());
+        setState(address.getState());
+        setPostalCode(address.getPostalCode());
+        setCountry(address.getCountry().getName());
     }
 }

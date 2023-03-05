@@ -59,6 +59,7 @@ public class Category {
     @OrderBy("name")
     private Set<Category> children = new HashSet<>();
 
+    // Constructor
     public Category(String name) {
         this.name = name;
         this.alias = name;
@@ -75,12 +76,16 @@ public class Category {
         return this.name;
     }
 
+    // Transient
     @Transient
     public String getImagePath() {
         if(this.id == null)
             return "/images/image-thumbnail.png";
         return "/u/category-images/" + this.id + "/" + this.image;
     }
+
+    @Transient
+    private boolean isHasChildren;
 
     public static Category copyIdAndName(Category category) {
         Category copyCategory = new Category();
@@ -92,6 +97,7 @@ public class Category {
         return copyCategory;
     }
 
+    // Utility method
     public static Category copyAll(Category category) {
         Category copyCategory = new Category();
 
@@ -107,8 +113,5 @@ public class Category {
 
         return copyCategory;
     }
-
-    @Transient
-    private boolean isHasChildren;
 
 }

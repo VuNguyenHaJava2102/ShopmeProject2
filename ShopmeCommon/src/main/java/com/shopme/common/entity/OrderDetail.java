@@ -40,6 +40,37 @@ public class OrderDetail {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    // Constructor
+    public OrderDetail(String categoryName,
+                       Integer id,
+                       int quantity,
+                       float productCost,
+                       float subtotal,
+                       float shippingCost) {
+        this.product = new Product();
+        this.product.setCategory(new Category(categoryName));
+        this.id = id;
+        this.quantity = quantity;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+        this.shippingCost = shippingCost;
+    }
+
+    public OrderDetail(Integer id,
+                       String productName,
+                       int quantity,
+                       float productCost,
+                       float subtotal,
+                       float shippingCost) {
+        this.product = new Product();
+        this.product.setName(productName);
+        this.id = id;
+        this.quantity = quantity;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+        this.shippingCost = shippingCost;
+    }
+
     @Transient
     public String getUnitShipping() {
         float unitShipping = shippingCost / quantity;

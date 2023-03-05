@@ -111,6 +111,7 @@ public class Product {
         this.details.add(new ProductDetail(name, value, this));
     }
 
+    // Transient
     @Transient
     public String getMainImagePath() {
         if(this.id == null)
