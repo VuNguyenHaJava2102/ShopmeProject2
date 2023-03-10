@@ -20,48 +20,60 @@ public class MasterOrderReportService {
 
     private final OrderRepository orderRepository;
 
-    public List<ReportItem> getReportDataLast7Days() {
-        return getReportDataLastXDays(7);
-    }
-
-    public List<ReportItem> getReportDateByDateRange(String startDateStr, String endDateStr) throws ParseException {
+    // 1
+    public List<ReportItem> getReportDataByDateRange(String startDateStr, String endDateStr) throws ParseException {
         Date startDate = dateFormatter.parse(startDateStr);
         Date endDate = dateFormatter.parse(endDateStr);
 
-        List<ReportItem> reportItemList = getReportDataByPeriod(startDate, endDate);
-        return reportItemList;
+        Calendar endDateCalendar = Calendar.getInstance();
+        endDateCalendar.setTime(endDate);
+        endDateCalendar.add(Calendar.DATE, 1);
+        endDate = endDateCalendar.getTime();
+
+        return getReportDataByPeriod(startDate, endDate);
     }
 
-    // private method
-    private List<ReportItem> getReportDataLastXDays(int days) {
+    // 2
+    public List<ReportItem> getReportDataLastXDays(int days) {
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        Date endTime = calendar.getTime();
+
         calendar.add(Calendar.DATE, -(days));
         Date startTime = calendar.getTime();
-        Date endTime = new Date();
 
         return getReportDataByPeriod(startTime, endTime);
     }
 
-    private List<ReportItem> getReportDataByPeriod(Date startTime, Date endTime) {
-        List<Order> orderList = orderRepository.findByOrderTimeBetween(startTime, endTime);
+    // 3
+    public List<ReportItem> getReportDataLastXMonths(int months) throws ParseException {
+        List<ReportItem> reportItemList = createRawReportItemListForMonth(months);
 
-        List<ReportItem> reportItemList = createReportData(startTime, endTime);
-        calculateSalesForReportData(orderList, reportItemList);
+        String lastIdentifier = reportItemList.get(0).getIdentifier();
+        String startDateStr = lastIdentifier + "-01";
+        Date startDate = dateFormatter.parse(startDateStr);
+        Date endDate = new Date();
 
-        printRawData(orderList);
-        printReportData(reportItemList);
+        List<Order> orderList = orderRepository.findByOrderTimeBetween(startDate, endDate);
+        calculateSalesForReportDataForMonth(orderList, reportItemList);
         return reportItemList;
     }
 
+    // private method
     // 1
-    private void printRawData(List<Order> orderList) {
-        orderList.forEach(o -> {
-            System.out.printf("%-3d | %s | %10.2f | %10.2f\n", o.getId(), o.getOrderTime(), o.getTotal(), o.getProductCost());
-        });
+    private List<ReportItem> getReportDataByPeriod(Date startTime, Date endTime) {
+        List<Order> orderList = orderRepository.findByOrderTimeBetween(startTime, endTime);
+
+        List<ReportItem> reportItemList = createRawReportItemList(startTime, endTime);
+        calculateSalesForReportData(orderList, reportItemList);
+
+        return reportItemList;
     }
 
-    // 2
-    private List<ReportItem> createReportData(Date startTime, Date endTime) {
+    // 2. Ở đây ta tạo một list report item nhưng các RI này chỉ có identifier là date, month; còn lại các trường vẫn mang gt null
+    // 2.1
+    private List<ReportItem> createRawReportItemList(Date startTime, Date endTime) {
         List<ReportItem> reportItemList = new ArrayList<>();
 
         do {
@@ -75,21 +87,35 @@ public class MasterOrderReportService {
             startTime = currentCalendar.getTime();
         } while(startTime.before(endTime));
 
-        String endDateString = dateFormatter.format(endTime);
-        ReportItem reportItem = new ReportItem(endDateString);
-        reportItemList.add(reportItem);
-
         return reportItemList;
     }
 
-    // 3
+    // 2.2
+    private List<ReportItem> createRawReportItemListForMonth(int months) {
+        List<ReportItem> reportItemList = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        for(int i = 1; i <= months; ++i) {
+            calendar.add(Calendar.MONTH, -1);
+            Date currentDate = calendar.getTime();
+
+            String yearAndMonth = dateFormatter.format(currentDate).substring(0, 7);
+            ReportItem reportItem = new ReportItem(yearAndMonth);
+            reportItemList.add(0, reportItem);
+        }
+        return reportItemList;
+    }
+
+    // 3. Ở đây là dùng list RI vừa tạo để tính toán các trường còn lại dựa thêm vào list order đã lấy
+    // 3.1
     private void calculateSalesForReportData(List<Order> orderList, List<ReportItem> reportItemList) {
         for(Order order : orderList) {
             String orderTimeString = dateFormatter.format(order.getOrderTime());
             ReportItem reportItem = new ReportItem(orderTimeString);
             int indexItem = reportItemList.indexOf(reportItem);
 
-            if(indexItem > 0) {
+            if(indexItem >= 0) {
                 reportItem = reportItemList.get(indexItem);
 
                 reportItem.addGrossSales(order.getTotal());
@@ -99,10 +125,32 @@ public class MasterOrderReportService {
         }
     }
 
-    // 4
-    private void printReportData(List<ReportItem> reportItemList) {
-        reportItemList.forEach(item -> {
-            System.out.printf("%s | %10.2f | %10.2f | %d\n", item.getIdentifier(), item.getGrossSales(), item.getNetSales(), item.getNumberOfOrder());
-        });
+    // 3.2
+    private void calculateSalesForReportDataForMonth(List<Order> orderList, List<ReportItem> reportItemList) {
+        for(Order order : orderList) {
+            String orderTimeString = dateFormatter.format(order.getOrderTime()).substring(0, 7);
+            ReportItem reportItem = new ReportItem(orderTimeString);
+            int indexItem = reportItemList.indexOf(reportItem);
+
+            if(indexItem >= 0) {
+                reportItem = reportItemList.get(indexItem);
+
+                reportItem.addGrossSales(order.getTotal());
+                reportItem.addNetSales(order.getSubtotal() - order.getProductCost());
+                reportItem.increaseNumberOfOrder();
+            }
+        }
     }
 }
+
+//    private void printRawData(List<Order> orderList) {
+//        orderList.forEach(o -> {
+//            System.out.printf("%-3d | %s | %10.2f | %10.2f\n", o.getId(), o.getOrderTime(), o.getTotal(), o.getProductCost());
+//        });
+//    }
+//
+//    private void printReportData(List<ReportItem> reportItemList) {
+//        reportItemList.forEach(item -> {
+//            System.out.printf("%s | %10.2f | %10.2f | %d\n", item.getIdentifier(), item.getGrossSales(), item.getNetSales(), item.getNumberOfOrder());
+//        });
+//    }

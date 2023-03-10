@@ -16,10 +16,7 @@
     <script type="text/javascript" th:src="@{/u/richtext/jquery.richtext.min.js}"></script>
 
     <style>
-        #thumbnail {
-            height: 100px;
-            border-radius: 10px;
-        }
+
     </style>
 </head>
 <body>
@@ -45,7 +42,7 @@
 
             <div class="tab-content">
                 <div class="tab-pane active p-3" id="date" role="tabpanel">
-                    1
+                    <div th:replace="/report/fragment-sales-by-date :: content()"></div>
                 </div>
                 <div class="tab-pane p-3" id="category" role="tabpanel">
                     2
@@ -63,53 +60,26 @@
     <div th:replace="fragments :: notificationDialog()"></div>
 
     <script th:src="@{/js/common.js}"></script>
-    <script th:src="@{/js/setting/setting-countries.js}"></script>
-    <script th:src="@{/js/setting/setting-states.js}"></script>
+    <script th:src="@{/js/report/sales-by-date.js}"></script>
+    <script th:src="@{/js/jquery.number.min.js}"></script>
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         let contextPath = "[[@{/}]]";
-        let csrfHeaderName = "[[${_csrf.headerName}]]";
-        let csrfValue = "[[${_csrf.token}]]";
+
+        let currencySymbol = "[[${CURRENCY_SYMBOL}]]";
+        let thousandPointType = "[[${THOUSAND_POINT_TYPE  == 'COMMA' ? ',' : '.'}]]";
+        let decimalPointType = "[[${DECIMAL_POINT_TYPE  == 'COMMA' ? ',' : '.'}]]";
+        let currencySymbolPosition = "[[${CURRENCY_SYMBOL_POSITION}]]";
+        let decimalDigits = "[[${DECIMAL_DIGITS}]]";
+
+        let prefix = currencySymbolPosition == "BEFORE" ? currencySymbol : "";
+        let suffix = currencySymbolPosition == "AFTER" ? currencySymbol : "";
 
         $(document).ready(function() {
-            // 1
-            $("#fileImage").on("change", function() {
-                let fileSize = this.files[0].size;
-                let defaultThumbnailPath = "[[@{/images/ShopmeAdminSmall.png}]]";
-
-                if(fileSize > 1048576) {
-                    this.setCustomValidity("File image must be less than 1MB!");
-                    this.reportValidity();
-                    $("#thumbnail").attr("src", defaultThumbnailPath);
-                } else {
-                    showThumbnail(this);
-                }
-            });
-
-            // 2
-            $("#decimalPointType").on("change", function() {
-                $("#thousandPointType").children("option").each(function() {
-                    let selectedEle = $(this);
-                    if(selectedEle.attr("selected") == "selected") {
-                        selectedEle.removeAttr("selected");
-                    } else {
-                        selectedEle.attr("selected", "selected");
-                    }
-                });
-            });
-
-            // 3
-            // $("#emailContent").richText();
+            google.charts.load("current", {"packages": ["corechart"]});
+            google.charts.setOnLoadCallback(loadSalesReportByDate);
         });
-
-        function showThumbnail(fileInput) {
-            let file = fileInput.files[0];
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                $("#thumbnail").attr("src", e.target.result);
-            }
-            reader.readAsDataURL(file);
-        }
     </script>
 </body>
 </html>

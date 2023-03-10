@@ -16,6 +16,7 @@ import org.springframework.test.annotation.Rollback;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -68,8 +69,13 @@ public class OrderRepositoryTest {
     @Test
     public void testFindByOrderTimeBetween() throws ParseException {
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = dateFormatter.parse("2021-08-01");
-        Date endDate = dateFormatter.parse("2021-08-31");
+        Date startDate = dateFormatter.parse("2022-2-26");
+        Date endDate = dateFormatter.parse("2022-12-2");
+
+        Calendar endDateCalendar = Calendar.getInstance();
+        endDateCalendar.setTime(endDate);
+        endDateCalendar.add(Calendar.DATE, 1);
+        endDate = endDateCalendar.getTime();
 
         List<Order> orderList = orderRepository.findByOrderTimeBetween(startDate, endDate);
         System.err.println("Result");

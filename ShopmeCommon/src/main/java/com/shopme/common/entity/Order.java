@@ -87,9 +87,9 @@ public class Order {
 
     private float productCost;
     private float shippingCost;
-    private float subtotal;
-    private float total;
+    private float subtotal; // product's price X quantity
     private float tax;
+    private float total;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 20)
